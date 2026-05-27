@@ -1,10 +1,13 @@
 
 <!doctype html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tala Admin — Store CRM</title>
+  <title>پنل مدیریت تالا — CRM فروشگاه</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:      oklch(97.5% 0.008 85);
@@ -18,9 +21,9 @@
       --success: oklch(62%   0.14  142);
       --warning: oklch(70%   0.14  72);
       --danger:  oklch(58%   0.18  25);
-      --font-display: 'Cormorant Garamond','Garamond',Georgia,serif;
-      --font-body: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-      --font-mono: ui-monospace,'JetBrains Mono',Menlo,monospace;
+      --font-display: 'Vazirmatn', system-ui, sans-serif;
+      --font-body: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'Vazirmatn', ui-monospace, 'JetBrains Mono', Menlo, monospace;
       --sidebar-w: 232px;
       --r: 12px;
       --r-sm: 8px;
@@ -35,16 +38,16 @@
     .sidebar { width:var(--sidebar-w); flex-shrink:0; background:var(--dark); display:flex; flex-direction:column; }
     .sb-logo { padding:26px 22px 22px; border-bottom:1px solid oklch(26% 0.015 55); }
     .sb-logo .wordmark { font-family:var(--font-display); font-size:24px; font-weight:300; letter-spacing:0.22em; color:oklch(92% 0.008 80); }
-    .sb-logo .sub { font-size:9.5px; letter-spacing:0.2em; text-transform:uppercase; color:oklch(44% 0.01 60); margin-top:3px; }
+    .sb-logo .sub { font-size:10px; letter-spacing:0.2em; color:oklch(44% 0.01 60); margin-top:3px; }
     .nav { flex:1; padding:14px 0; overflow-y:auto; }
-    .nav-label { padding:18px 22px 7px; font-size:9.5px; letter-spacing:0.18em; text-transform:uppercase; color:oklch(38% 0.01 60); }
-    .nav-item { display:flex; align-items:center; gap:11px; padding:10px 22px; cursor:pointer; color:oklch(60% 0.01 65); font-size:13px; font-weight:450; border-left:2px solid transparent; transition:all .15s; user-select:none; }
+    .nav-label { padding:18px 22px 7px; font-size:10px; letter-spacing:0.18em; color:oklch(38% 0.01 60); }
+    .nav-item { display:flex; align-items:center; gap:11px; padding:10px 22px; cursor:pointer; color:oklch(60% 0.01 65); font-size:13px; font-weight:450; border-right:2px solid transparent; transition:all .15s; user-select:none; }
     .nav-item:hover { color:oklch(86% 0.008 80); background:oklch(21% 0.014 55); }
-    .nav-item.active { color:var(--accent); border-left-color:var(--accent); background:oklch(19% 0.012 58); }
+    .nav-item.active { color:var(--accent); border-right-color:var(--accent); background:oklch(19% 0.012 58); }
     .nav-item .ni { width:16px; font-size:15px; text-align:center; flex-shrink:0; }
     .sb-foot { padding:18px 22px; border-top:1px solid oklch(24% 0.015 55); }
     .sb-user { display:flex; align-items:center; gap:10px; }
-    .sb-av { width:30px; height:30px; border-radius:50%; background:oklch(26% 0.04 78); display:grid; place-items:center; font-size:12px; color:var(--accent); font-weight:600; flex-shrink:0; }
+    .sb-av { width:30px; height:30px; border-radius:50%; background:oklch(26% 0.04 78); display:grid; place-items:center; font-size:13px; color:var(--accent); font-weight:600; flex-shrink:0; }
     .sb-name { font-size:12px; color:oklch(78% 0.008 75); font-weight:500; }
     .sb-role { font-size:11px; color:oklch(44% 0.01 60); }
 
@@ -68,9 +71,9 @@
 
     /* ── Search ── */
     .search-wrap { position:relative; display:flex; align-items:center; }
-    .search-wrap input { width:260px; padding:8px 12px 8px 34px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; font-family:var(--font-body); background:var(--surface); color:var(--fg); outline:none; transition:border-color .15s; }
+    .search-wrap input { width:260px; padding:8px 34px 8px 12px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; font-family:var(--font-body); background:var(--surface); color:var(--fg); outline:none; transition:border-color .15s; }
     .search-wrap input:focus { border-color:var(--accent); }
-    .search-wrap .si { position:absolute; left:10px; color:var(--muted); font-size:14px; pointer-events:none; }
+    .search-wrap .si { position:absolute; right:10px; color:var(--muted); font-size:14px; pointer-events:none; }
 
     /* ── Sections ── */
     .section { display:none; }
@@ -84,7 +87,7 @@
     /* ── Stats ── */
     .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:18px 20px; }
-    .stat-label { font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .stat-label { font-size:11px; letter-spacing:0.08em; color:var(--muted); margin-bottom:8px; }
     .stat-value { font-family:var(--font-mono); font-size:25px; font-weight:700; line-height:1; margin-bottom:6px; font-variant-numeric:tabular-nums; }
     .stat-delta { font-size:11px; display:flex; align-items:center; gap:3px; }
     .stat-delta.up { color:var(--success); }
@@ -95,8 +98,8 @@
 
     /* ── Table ── */
     .table { width:100%; border-collapse:collapse; }
-    .table th { text-align:left; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); padding:0 12px 10px 0; border-bottom:1px solid var(--border); font-weight:500; }
-    .table td { padding:11px 12px 11px 0; font-size:13px; border-bottom:1px solid oklch(94% 0.004 85); vertical-align:middle; }
+    .table th { text-align:right; font-size:11px; letter-spacing:0.06em; color:var(--muted); padding:0 0 10px 12px; border-bottom:1px solid var(--border); font-weight:500; }
+    .table td { padding:11px 0 11px 12px; font-size:13px; border-bottom:1px solid oklch(94% 0.004 85); vertical-align:middle; }
     .table tbody tr:last-child td { border-bottom:none; }
     .table tbody tr:hover td { background:oklch(97% 0.005 85); }
 
@@ -108,7 +111,7 @@
     .badge-err { background:oklch(96% 0.05 25);  color:oklch(42% 0.18 25); }
 
     /* ── Avatar ── */
-    .av { width:32px; height:32px; border-radius:50%; background:var(--accent-dim); display:inline-grid; place-items:center; font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0; }
+    .av { width:32px; height:32px; border-radius:50%; background:var(--accent-dim); display:inline-grid; place-items:center; font-size:13px; font-weight:700; color:var(--accent); flex-shrink:0; }
 
     /* ── Activity ── */
     .act-list { display:flex; flex-direction:column; }
@@ -135,9 +138,9 @@
     .cust-card:hover { border-color:oklch(80% 0.01 78); box-shadow:0 2px 10px oklch(85% 0.008 80/.4); }
     .cust-hdr { display:flex; align-items:center; gap:11px; margin-bottom:13px; }
     .cust-name { font-size:13px; font-weight:600; }
-    .cust-phone { font-size:11px; color:var(--muted); font-family:var(--font-mono); margin-top:1px; }
+    .cust-phone { font-size:11px; color:var(--muted); font-family:var(--font-mono); margin-top:1px; direction:ltr; text-align:right; }
     .cust-meta { display:flex; gap:16px; }
-    .cm-label { font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+    .cm-label { font-size:10px; letter-spacing:0.08em; color:var(--muted); }
     .cm-val { font-size:13px; font-weight:700; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
     .cust-add { background:var(--bg); border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; min-height:120px; }
     .cust-add:hover { border-color:var(--accent); }
@@ -166,16 +169,16 @@
     .style-opt:hover { border-color:oklch(80% 0.01 78); }
     .style-opt.active { border-color:var(--accent); background:var(--accent-dim); }
     .style-thumb { width:100%; aspect-ratio:9/16; background:oklch(16% 0.018 55); border-radius:6px; margin-bottom:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:10px; color:oklch(70% 0.01 60); }
-    .style-name { font-size:11px; font-weight:600; }
-    .style-desc { font-size:10px; color:var(--muted); margin-top:2px; }
+    .style-name { font-size:12px; font-weight:600; }
+    .style-desc { font-size:10.5px; color:var(--muted); margin-top:2px; }
 
     .color-pickers { display:flex; gap:14px; }
     .color-pick { flex:1; }
-    .color-label { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:6px; }
+    .color-label { font-size:10.5px; letter-spacing:0.06em; color:var(--muted); font-weight:500; margin-bottom:6px; }
     .color-row { display:flex; align-items:center; gap:8px; }
     .color-swatch { width:36px; height:36px; border-radius:8px; border:2px solid var(--border); cursor:pointer; transition:border-color .15s; }
     .color-swatch:hover { border-color:var(--fg); }
-    .color-hex { font-family:var(--font-mono); font-size:12px; color:var(--fg); width:70px; text-align:center; padding:6px 8px; border:1px solid var(--border); border-radius:6px; background:var(--surface); }
+    .color-hex { font-family:var(--font-mono); font-size:12px; color:var(--fg); width:80px; text-align:center; padding:6px 8px; border:1px solid var(--border); border-radius:6px; background:var(--surface); direction:ltr; }
 
     .phone-preview { position:relative; }
     .phone-frame { width:390px; height:844px; background:oklch(16% 0.018 55); border-radius:44px; padding:14px; box-shadow:0 24px 60px oklch(10% 0.02 60/.3); position:relative; }
@@ -185,7 +188,7 @@
     .preview-slot { position:relative; cursor:pointer; transition:opacity .15s; overflow:hidden; }
     .preview-slot:hover .slot-actions { opacity:1; }
     .slot-actions { position:absolute; inset:0; background:oklch(10% 0.02 60/.65); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; opacity:0; transition:opacity .15s; backdrop-filter:blur(3px); }
-    .slot-act { padding:6px 14px; font-size:11px; font-weight:500; border:none; border-radius:6px; cursor:pointer; background:rgba(255,255,255,.95); color:#1c1b1a; transition:all .15s; }
+    .slot-act { padding:6px 14px; font-size:11px; font-weight:500; border:none; border-radius:6px; cursor:pointer; background:rgba(255,255,255,.95); color:#1c1b1a; transition:all .15s; font-family:var(--font-body); }
     .slot-act:hover { background:#fff; }
     .slot-act.del { background:oklch(92% 0.08 25); color:var(--danger); }
     .slot-act.del:hover { background:oklch(88% 0.1 25); }
@@ -196,23 +199,23 @@
 
     .preview-nav { position:absolute; bottom:0; left:0; right:0; height:70px; background:oklch(12% 0.015 55); display:flex; justify-content:space-around; align-items:center; padding:0 20px 10px; }
     .nav-icon { width:44px; height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:oklch(50% 0.01 60); font-size:18px; }
-    .nav-icon span { font-size:9px; letter-spacing:0.05em; }
+    .nav-icon span { font-size:9.5px; letter-spacing:0.02em; }
     .nav-icon.active { color:var(--preview-primary, #d4a574); }
 
     .tips-card { background:oklch(96% 0.006 85); border-radius:var(--r-sm); padding:14px 18px; }
-    .tip-title { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:8px; }
-    .tip-list { margin:0; padding-left:16px; font-size:12px; color:var(--muted); line-height:1.7; }
+    .tip-title { font-size:11px; letter-spacing:0.08em; color:var(--muted); font-weight:600; margin-bottom:8px; }
+    .tip-list { margin:0; padding-right:16px; font-size:12px; color:var(--muted); line-height:1.7; }
 
     /* ── Invoice list ── */
     .inv-row { display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--border); cursor:pointer; }
     .inv-row:last-child { border-bottom:none; }
     .inv-row:hover { background:oklch(97.5% 0.005 85); margin:0 -20px; padding:13px 20px; border-radius:var(--r-sm); }
-    .inv-id { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--accent); min-width:44px; }
+    .inv-id { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--accent); min-width:50px; direction:ltr; }
     .inv-cust { flex:1; }
     .inv-cust .n { font-size:13px; font-weight:500; }
-    .inv-cust .p { font-size:11px; color:var(--muted); font-family:var(--font-mono); }
-    .inv-amt { font-family:var(--font-mono); font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; min-width:80px; text-align:right; }
-    .inv-date { font-size:11px; color:var(--muted); min-width:56px; text-align:right; }
+    .inv-cust .p { font-size:11px; color:var(--muted); font-family:var(--font-mono); direction:ltr; text-align:right; }
+    .inv-amt { font-family:var(--font-mono); font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; min-width:110px; text-align:left; }
+    .inv-date { font-size:11px; color:var(--muted); min-width:80px; text-align:left; }
 
     /* ── Modal ── */
     .modal-overlay { position:fixed; inset:0; background:oklch(10% 0.02 60/.52); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(5px); }
@@ -228,10 +231,10 @@
 
     /* ── Forms ── */
     .fgrp { margin-bottom:14px; }
-    .flabel { display:block; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:5px; }
+    .flabel { display:block; font-size:11px; letter-spacing:0.06em; color:var(--muted); font-weight:500; margin-bottom:5px; }
     .finput { width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:14px; font-family:var(--font-body); background:var(--surface); color:var(--fg); outline:none; transition:border-color .15s; }
     .finput:focus { border-color:var(--accent); }
-    .fselect { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B7E73' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:30px; cursor:pointer; }
+    .fselect { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B7E73' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:left 12px center; padding-left:30px; cursor:pointer; }
     .frow { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
     .ftarea { resize:vertical; min-height:76px; }
 
@@ -243,7 +246,7 @@
     .upload-hint { font-size:11px; color:var(--muted); }
 
     /* ── Customer Drawer ── */
-    .cust-drawer { position:fixed; top:0; right:0; height:100vh; width:440px; max-width:95vw; background:var(--surface); border-left:1px solid var(--border); box-shadow:-20px 0 60px oklch(10% 0.02 60/.14); z-index:150; transform:translateX(100%); transition:transform .28s cubic-bezier(.22,1,.36,1); overflow-y:auto; display:flex; flex-direction:column; }
+    .cust-drawer { position:fixed; top:0; left:0; height:100vh; width:440px; max-width:95vw; background:var(--surface); border-right:1px solid var(--border); box-shadow:20px 0 60px oklch(10% 0.02 60/.14); z-index:150; transform:translateX(-100%); transition:transform .28s cubic-bezier(.22,1,.36,1); overflow-y:auto; display:flex; flex-direction:column; }
     .cust-drawer.open { transform:translateX(0); }
     .cd-backdrop { position:fixed; inset:0; background:oklch(10% 0.02 60/.18); z-index:149; display:none; backdrop-filter:blur(2px); }
     .cd-backdrop.open { display:block; }
@@ -251,11 +254,11 @@
     .cd-av { width:48px; height:48px; border-radius:50%; background:var(--accent-dim); display:grid; place-items:center; font-size:18px; font-weight:700; color:var(--accent); flex-shrink:0; }
     .cd-info { flex:1; min-width:0; }
     .cd-name { font-family:var(--font-display); font-size:20px; font-weight:600; line-height:1.2; }
-    .cd-phone { font-size:12px; font-family:var(--font-mono); color:var(--muted); margin-top:3px; }
+    .cd-phone { font-size:12px; font-family:var(--font-mono); color:var(--muted); margin-top:3px; direction:ltr; text-align:right; }
     .cd-joined { font-size:11px; color:var(--muted); margin-top:4px; }
     .cd-close { background:none; border:none; cursor:pointer; color:var(--muted); font-size:24px; padding:0; line-height:1; flex-shrink:0; margin-top:-2px; }
     .cd-close:hover { color:var(--fg); }
-    .cd-actions { display:flex; gap:6px; align-items:center; flex:1; justify-content:flex-end; margin-right:10px; }
+    .cd-actions { display:flex; gap:6px; align-items:center; flex:1; justify-content:flex-end; margin-left:10px; }
     .cd-act-btn { width:32px; height:32px; border-radius:var(--r-sm); background:transparent; border:1px solid var(--border); cursor:pointer; display:grid; place-items:center; font-size:14px; transition:all .15s; flex-shrink:0; }
     .cd-act-btn:hover { background:var(--bg); border-color:var(--fg); }
     .cd-act-btn.edit:hover { color:var(--accent); border-color:var(--accent); }
@@ -263,11 +266,11 @@
     .cd-act-btn.delete:hover { color:var(--danger); border-color:var(--danger); }
     .cd-body { flex:1; padding:18px 22px; }
     .cd-section { margin-bottom:22px; }
-    .cd-sec-title { font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:10px; }
+    .cd-sec-title { font-size:10.5px; letter-spacing:0.08em; color:var(--muted); font-weight:600; margin-bottom:10px; }
     .cd-metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
     .cd-metrics-3 { grid-template-columns:repeat(3,1fr); }
     .cd-metric { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; }
-    .cd-m-label { font-size:9.5px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px; }
+    .cd-m-label { font-size:10px; color:var(--muted); letter-spacing:0.05em; margin-bottom:4px; }
     .cd-m-val { font-family:var(--font-mono); font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.2; }
     .cd-m-sub { font-size:10.5px; color:var(--muted); margin-top:3px; }
     .liked-scroll { display:flex; gap:9px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
@@ -275,29 +278,29 @@
     .liked-item { flex-shrink:0; width:76px; cursor:pointer; }
     .liked-thumb { width:76px; height:76px; border-radius:var(--r-sm); background:oklch(95% 0.005 85); display:flex; align-items:center; justify-content:center; font-size:26px; border:1px solid var(--border); transition:border-color .15s; }
     .liked-item:hover .liked-thumb { border-color:oklch(78% 0.01 78); }
-    .liked-name { font-size:10px; color:var(--muted); margin-top:5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; text-align:center; }
+    .liked-name { font-size:10.5px; color:var(--muted); margin-top:5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; text-align:center; }
     .actl-item { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid oklch(94% 0.004 85); align-items:flex-start; }
     .actl-item:last-child { border-bottom:none; }
     .actl-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); margin-top:5px; flex-shrink:0; }
     .actl-body { flex:1; min-width:0; }
     .actl-main { font-size:12px; font-weight:500; }
     .actl-sub { font-size:11px; color:var(--muted); margin-top:2px; }
-    .actl-time { font-size:10.5px; color:var(--muted); font-family:var(--font-mono); flex-shrink:0; white-space:nowrap; }
+    .actl-time { font-size:11px; color:var(--muted); font-family:var(--font-mono); flex-shrink:0; white-space:nowrap; }
     .act-bar { display:flex; gap:3px; margin-top:8px; align-items:flex-end; height:36px; }
     .act-bar-col { flex:1; background:var(--accent-dim); border-radius:3px 3px 0 0; transition:background .15s; min-height:3px; }
     .act-bar-col.hi { background:var(--accent); }
     .act-bar-days { display:flex; justify-content:space-between; margin-top:4px; }
-    .act-bar-day { font-size:9.5px; color:var(--muted); flex:1; text-align:center; }
+    .act-bar-day { font-size:10px; color:var(--muted); flex:1; text-align:center; }
     .cd-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:9px; flex-shrink:0; }
     .cd-actions { display:flex; gap:8px; margin-top:16px; padding-top:16px; border-top:1px dashed var(--border); }
 
     /* ── Steps ── */
     .steps { display:flex; align-items:center; gap:6px; margin-bottom:26px; }
     .step { display:flex; align-items:center; gap:7px; flex:1; }
-    .step-num { width:26px; height:26px; border-radius:50%; background:var(--bg); border:1px solid var(--border); display:grid; place-items:center; font-size:11px; font-weight:700; color:var(--muted); flex-shrink:0; transition:all .2s; }
+    .step-num { width:26px; height:26px; border-radius:50%; background:var(--bg); border:1px solid var(--border); display:grid; place-items:center; font-size:12px; font-weight:700; color:var(--muted); flex-shrink:0; transition:all .2s; }
     .step.active .step-num { background:var(--fg); color:var(--surface); border-color:var(--fg); }
     .step.done .step-num { background:var(--success); color:#fff; border-color:var(--success); }
-    .step-lbl { font-size:11.5px; color:var(--muted); }
+    .step-lbl { font-size:12px; color:var(--muted); }
     .step.active .step-lbl { color:var(--fg); font-weight:500; }
     .step-line { height:1px; background:var(--border); flex:1; }
 
@@ -312,11 +315,11 @@
     .pe-main { flex:1; }
     .pe-name { font-size:13px; font-weight:600; margin-bottom:2px; }
     .pe-unit { font-size:11px; color:var(--muted); }
-    .pe-price { font-family:var(--font-mono); font-size:18px; font-weight:700; font-variant-numeric:tabular-nums; min-width:100px; text-align:right; }
-    .pe-trend { font-family:var(--font-mono); font-size:12px; font-weight:600; min-width:60px; text-align:right; }
+    .pe-price { font-family:var(--font-mono); font-size:18px; font-weight:700; font-variant-numeric:tabular-nums; min-width:120px; text-align:left; }
+    .pe-trend { font-family:var(--font-mono); font-size:12px; font-weight:600; min-width:60px; text-align:left; }
     .pe-trend.up { color:var(--success); }
     .pe-trend.down { color:var(--danger); }
-    .pe-updated { font-size:11px; color:var(--muted); min-width:120px; text-align:right; }
+    .pe-updated { font-size:11px; color:var(--muted); min-width:140px; text-align:left; }
 
     /* ── Responsive ── */
     @media(max-width:1100px) {
@@ -343,26 +346,26 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sb-logo">
-      <div class="wordmark">TALA</div>
-      <div class="sub">Store Admin</div>
+      <div class="wordmark">تالا</div>
+      <div class="sub">پنل مدیریت</div>
     </div>
     <nav class="nav">
-      <div class="nav-label">Overview</div>
-      <div class="nav-item active" data-sec="dashboard"><span class="ni">◫</span>Dashboard</div>
-      <div class="nav-label">Manage</div>
-      <div class="nav-item" data-sec="customers"><span class="ni">◎</span>Customers</div>
-      <div class="nav-item" data-sec="products"><span class="ni">◈</span>Products</div>
-      <div class="nav-item" data-sec="gallery"><span class="ni">▣</span>Showroom</div>
-      <div class="nav-label">Commerce</div>
-      <div class="nav-item" data-sec="invoices"><span class="ni">◧</span>Invoices</div>
-      <div class="nav-item" data-sec="priceboard"><span class="ni">◎</span>Price Board</div>
+      <div class="nav-label">کلیات</div>
+      <div class="nav-item active" data-sec="dashboard"><span class="ni">◫</span>داشبورد</div>
+      <div class="nav-label">مدیریت</div>
+      <div class="nav-item" data-sec="customers"><span class="ni">◎</span>مشتریان</div>
+      <div class="nav-item" data-sec="products"><span class="ni">◈</span>محصولات</div>
+      <div class="nav-item" data-sec="gallery"><span class="ni">▣</span>ویترین</div>
+      <div class="nav-label">فروش</div>
+      <div class="nav-item" data-sec="invoices"><span class="ni">◧</span>فاکتورها</div>
+      <div class="nav-item" data-sec="priceboard"><span class="ni">◎</span>قیمت روز</div>
     </nav>
     <div class="sb-foot">
       <div class="sb-user">
-        <div class="sb-av">A</div>
+        <div class="sb-av">م</div>
         <div>
-          <div class="sb-name">Admin</div>
-          <div class="sb-role">Store Manager</div>
+          <div class="sb-name">مدیر</div>
+          <div class="sb-role">مدیر فروشگاه</div>
         </div>
       </div>
     </div>
@@ -371,13 +374,13 @@
   <!-- Main -->
   <div class="main">
     <div class="topbar">
-      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-title" id="tb-title">داشبورد</div>
       <div class="tb-actions">
         <div class="search-wrap">
           <span class="si">⌕</span>
-          <input type="text" placeholder="Search…">
+          <input type="text" placeholder="جستجو…">
         </div>
-        <button class="btn btn-primary" id="primary-btn" onclick="handlePrimary()">+ Add</button>
+        <button class="btn btn-primary" id="primary-btn" onclick="handlePrimary()">+ افزودن</button>
       </div>
     </div>
 
@@ -387,51 +390,51 @@
       <div class="section active" id="sec-dashboard">
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-label">Revenue — Today</div>
-            <div class="stat-value" style="color:var(--accent)">₺24,500</div>
-            <div class="stat-delta up">↑ 12% vs yesterday</div>
+            <div class="stat-label">درآمد امروز</div>
+            <div class="stat-value" style="color:var(--accent)">۲۴٬۵۰۰٬۰۰۰ ﺗ</div>
+            <div class="stat-delta up">↑ ۱۲٪ نسبت به دیروز</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Orders This Week</div>
-            <div class="stat-value">38</div>
-            <div class="stat-delta up">↑ 5 from last week</div>
+            <div class="stat-label">سفارش‌های این هفته</div>
+            <div class="stat-value">۳۸</div>
+            <div class="stat-delta up">↑ ۵ بیشتر از هفته‌ی پیش</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">New Customers</div>
-            <div class="stat-value">14</div>
-            <div class="stat-delta up">↑ 3 this week</div>
+            <div class="stat-label">مشتریان جدید</div>
+            <div class="stat-value">۱۴</div>
+            <div class="stat-delta up">↑ ۳ این هفته</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Gallery Posts</div>
-            <div class="stat-value">127</div>
-            <div class="stat-delta down">↓ 2 pending review</div>
+            <div class="stat-label">پست‌های گالری</div>
+            <div class="stat-value">۱۲۷</div>
+            <div class="stat-delta down">↓ ۲ در انتظار بررسی</div>
           </div>
         </div>
 
         <div class="dash-grid">
           <div class="card">
             <div class="card-header">
-              <div class="card-title">Recent Invoices</div>
-              <button class="btn btn-ghost btn-sm" onclick="navigate('invoices')">View all</button>
+              <div class="card-title">فاکتورهای اخیر</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('invoices')">مشاهده‌ی همه</button>
             </div>
             <table class="table">
-              <thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+              <thead><tr><th>فاکتور</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th><th>تاریخ</th></tr></thead>
               <tbody>
-                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1048</span></td><td>Sahar Moradi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺8,200</span></td><td><span class="badge badge-ok">Paid</span></td><td style="color:var(--muted);font-size:12px">May 17</td></tr>
-                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1047</span></td><td>Reza Ahmadi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺15,400</span></td><td><span class="badge badge-warn">Pending</span></td><td style="color:var(--muted);font-size:12px">May 16</td></tr>
-                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1046</span></td><td>Mina Tehrani</td><td><span style="font-family:var(--font-mono);font-weight:600">₺3,600</span></td><td><span class="badge badge-ok">Paid</span></td><td style="color:var(--muted);font-size:12px">May 15</td></tr>
-                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1045</span></td><td>Ali Karimi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺22,100</span></td><td><span class="badge badge-dim">Draft</span></td><td style="color:var(--muted);font-size:12px">May 14</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700;direction:ltr">#۱۰۴۸</span></td><td>سحر مرادی</td><td><span style="font-family:var(--font-mono);font-weight:600">۸٬۲۰۰٬۰۰۰ ﺗ</span></td><td><span class="badge badge-ok">پرداخت‌شده</span></td><td style="color:var(--muted);font-size:12px">۲۷ اردیبهشت</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700;direction:ltr">#۱۰۴۷</span></td><td>رضا احمدی</td><td><span style="font-family:var(--font-mono);font-weight:600">۱۵٬۴۰۰٬۰۰۰ ﺗ</span></td><td><span class="badge badge-warn">در انتظار</span></td><td style="color:var(--muted);font-size:12px">۲۶ اردیبهشت</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700;direction:ltr">#۱۰۴۶</span></td><td>مینا تهرانی</td><td><span style="font-family:var(--font-mono);font-weight:600">۳٬۶۰۰٬۰۰۰ ﺗ</span></td><td><span class="badge badge-ok">پرداخت‌شده</span></td><td style="color:var(--muted);font-size:12px">۲۵ اردیبهشت</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700;direction:ltr">#۱۰۴۵</span></td><td>علی کریمی</td><td><span style="font-family:var(--font-mono);font-weight:600">۲۲٬۱۰۰٬۰۰۰ ﺗ</span></td><td><span class="badge badge-dim">پیش‌نویس</span></td><td style="color:var(--muted);font-size:12px">۲۴ اردیبهشت</td></tr>
               </tbody>
             </table>
           </div>
           <div class="card">
-            <div class="card-header"><div class="card-title">Recent Activity</div></div>
+            <div class="card-header"><div class="card-title">فعالیت‌های اخیر</div></div>
             <div class="act-list">
-              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">New product added: <strong>Diamond Solitaire Ring</strong></div><div class="act-time">2 min ago</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--success)"></div><div><div class="act-text">Invoice <strong>#1048</strong> marked as paid</div><div class="act-time">18 min ago</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text">New customer: <strong>Sahar Moradi</strong></div><div class="act-time">1 hr ago</div></div></div>
-              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">Gallery post: <strong>Ruby Earrings Collection</strong></div><div class="act-time">3 hr ago</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--warning)"></div><div><div class="act-text">Invoice <strong>#1047</strong> awaiting payment — Reza Ahmadi</div><div class="act-time">5 hr ago</div></div></div>
+              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">افزودن محصول جدید: <strong>انگشتر سولیتر الماس</strong></div><div class="act-time">۲ دقیقه پیش</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--success)"></div><div><div class="act-text">فاکتور <strong>#۱۰۴۸</strong> پرداخت‌شده ثبت شد</div><div class="act-time">۱۸ دقیقه پیش</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text">مشتری جدید: <strong>سحر مرادی</strong></div><div class="act-time">۱ ساعت پیش</div></div></div>
+              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">پست گالری: <strong>مجموعه‌ی گوشواره‌ی یاقوت</strong></div><div class="act-time">۳ ساعت پیش</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--warning)"></div><div><div class="act-text">فاکتور <strong>#۱۰۴۷</strong> در انتظار پرداخت — رضا احمدی</div><div class="act-time">۵ ساعت پیش</div></div></div>
             </div>
           </div>
         </div>
@@ -440,34 +443,34 @@
       <!-- CUSTOMERS -->
       <div class="section" id="sec-customers">
         <div class="page-hdr">
-          <div><div class="page-title">Customers</div><div class="page-sub">48 registered customers</div></div>
-          <div class="search-wrap"><span class="si">⌕</span><input type="text" placeholder="Search customers…"></div>
+          <div><div class="page-title">مشتریان</div><div class="page-sub">۴۸ مشتری ثبت‌شده</div></div>
+          <div class="search-wrap"><span class="si">⌕</span><input type="text" placeholder="جستجوی مشتری…"></div>
         </div>
         <div class="cust-grid">
-          <div class="cust-card" onclick="openCustDrawer('Sahar Moradi')"><div class="cust-hdr"><div class="av">S</div><div><div class="cust-name">Sahar Moradi</div><div class="cust-phone">+98 912 345 6789</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">7</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺84,200</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 17</div></div></div></div>
-          <div class="cust-card" onclick="openCustDrawer('Reza Ahmadi')"><div class="cust-hdr"><div class="av">R</div><div><div class="cust-name">Reza Ahmadi</div><div class="cust-phone">+98 935 678 1234</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">3</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺42,500</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 16</div></div></div></div>
-          <div class="cust-card" onclick="openCustDrawer('Mina Tehrani')"><div class="cust-hdr"><div class="av">M</div><div><div class="cust-name">Mina Tehrani</div><div class="cust-phone">+98 901 234 5678</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">12</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺198k</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 15</div></div></div></div>
-          <div class="cust-card" onclick="openCustDrawer('Ali Karimi')"><div class="cust-hdr"><div class="av">A</div><div><div class="cust-name">Ali Karimi</div><div class="cust-phone">+98 913 456 7890</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">2</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺28,700</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 14</div></div></div></div>
-          <div class="cust-card" onclick="openCustDrawer('Nasrin Hosseini')"><div class="cust-hdr"><div class="av">N</div><div><div class="cust-name">Nasrin Hosseini</div><div class="cust-phone">+98 921 789 0123</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">5</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺67,300</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 12</div></div></div></div>
-          <div class="cust-card cust-add" onclick="openModal('cust')"><div class="add-placeholder"><div class="plus">+</div><div class="lbl">Add Customer</div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Sahar Moradi')"><div class="cust-hdr"><div class="av">س</div><div><div class="cust-name">سحر مرادی</div><div class="cust-phone">۰۹۱۲ ۳۴۵ ۶۷۸۹</div></div></div><div class="cust-meta"><div><div class="cm-label">خریدها</div><div class="cm-val">۷</div></div><div><div class="cm-label">مجموع</div><div class="cm-val">۸۴٬۲۰۰٬۰۰۰</div></div><div><div class="cm-label">آخرین</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">۲۷ ارد</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Reza Ahmadi')"><div class="cust-hdr"><div class="av">ر</div><div><div class="cust-name">رضا احمدی</div><div class="cust-phone">۰۹۳۵ ۶۷۸ ۱۲۳۴</div></div></div><div class="cust-meta"><div><div class="cm-label">خریدها</div><div class="cm-val">۳</div></div><div><div class="cm-label">مجموع</div><div class="cm-val">۴۲٬۵۰۰٬۰۰۰</div></div><div><div class="cm-label">آخرین</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">۲۶ ارد</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Mina Tehrani')"><div class="cust-hdr"><div class="av">م</div><div><div class="cust-name">مینا تهرانی</div><div class="cust-phone">۰۹۰۱ ۲۳۴ ۵۶۷۸</div></div></div><div class="cust-meta"><div><div class="cm-label">خریدها</div><div class="cm-val">۱۲</div></div><div><div class="cm-label">مجموع</div><div class="cm-val">۱۹۸م</div></div><div><div class="cm-label">آخرین</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">۲۵ ارد</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Ali Karimi')"><div class="cust-hdr"><div class="av">ع</div><div><div class="cust-name">علی کریمی</div><div class="cust-phone">۰۹۱۳ ۴۵۶ ۷۸۹۰</div></div></div><div class="cust-meta"><div><div class="cm-label">خریدها</div><div class="cm-val">۲</div></div><div><div class="cm-label">مجموع</div><div class="cm-val">۲۸٬۷۰۰٬۰۰۰</div></div><div><div class="cm-label">آخرین</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">۲۴ ارد</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Nasrin Hosseini')"><div class="cust-hdr"><div class="av">ن</div><div><div class="cust-name">نسرین حسینی</div><div class="cust-phone">۰۹۲۱ ۷۸۹ ۰۱۲۳</div></div></div><div class="cust-meta"><div><div class="cm-label">خریدها</div><div class="cm-val">۵</div></div><div><div class="cm-label">مجموع</div><div class="cm-val">۶۷٬۳۰۰٬۰۰۰</div></div><div><div class="cm-label">آخرین</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">۲۲ ارد</div></div></div></div>
+          <div class="cust-card cust-add" onclick="openModal('cust')"><div class="add-placeholder"><div class="plus">+</div><div class="lbl">افزودن مشتری</div></div></div>
         </div>
       </div>
 
       <!-- PRODUCTS -->
       <div class="section" id="sec-products">
         <div class="page-hdr">
-          <div><div class="page-title">Products</div><div class="page-sub">36 items in catalog</div></div>
+          <div><div class="page-title">محصولات</div><div class="page-sub">۳۶ قطعه در کاتالوگ</div></div>
           <div class="pills" id="prod-pills">
-            <span class="pill active">All</span><span class="pill">Rings</span><span class="pill">Necklaces</span><span class="pill">Bracelets</span><span class="pill">Earrings</span>
+            <span class="pill active">همه</span><span class="pill">انگشتر</span><span class="pill">گردنبند</span><span class="pill">دستبند</span><span class="pill">گوشواره</span>
           </div>
         </div>
         <div class="prod-grid">
-          <div class="prod-card"><div class="prod-thumb">💍</div><div class="prod-body"><div class="prod-name">Diamond Solitaire Ring</div><div class="prod-cat">Rings · 18K Gold</div><div class="prod-foot"><div class="prod-price">₺24,500</div><span class="badge badge-ok">In Stock</span></div></div></div>
-          <div class="prod-card"><div class="prod-thumb">📿</div><div class="prod-body"><div class="prod-name">Pearl Drop Necklace</div><div class="prod-cat">Necklaces · Silver</div><div class="prod-foot"><div class="prod-price">₺8,900</div><span class="badge badge-ok">In Stock</span></div></div></div>
-          <div class="prod-card"><div class="prod-thumb" style="font-size:36px">🔗</div><div class="prod-body"><div class="prod-name">Gold Chain Bracelet</div><div class="prod-cat">Bracelets · 24K Gold</div><div class="prod-foot"><div class="prod-price">₺18,200</div><span class="badge badge-warn">Low Stock</span></div></div></div>
-          <div class="prod-card"><div class="prod-thumb">✨</div><div class="prod-body"><div class="prod-name">Ruby Stud Earrings</div><div class="prod-cat">Earrings · 18K Gold</div><div class="prod-foot"><div class="prod-price">₺12,700</div><span class="badge badge-err">Out of Stock</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb">💍</div><div class="prod-body"><div class="prod-name">انگشتر سولیتر الماس</div><div class="prod-cat">انگشتر · طلای ۱۸ عیار</div><div class="prod-foot"><div class="prod-price">۲۴٬۵۰۰٬۰۰۰ ﺗ</div><span class="badge badge-ok">موجود</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb">📿</div><div class="prod-body"><div class="prod-name">گردنبند آویز مروارید</div><div class="prod-cat">گردنبند · نقره</div><div class="prod-foot"><div class="prod-price">۸٬۹۰۰٬۰۰۰ ﺗ</div><span class="badge badge-ok">موجود</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb" style="font-size:36px">🔗</div><div class="prod-body"><div class="prod-name">دستبند طلای زنجیری</div><div class="prod-cat">دستبند · طلای ۲۴ عیار</div><div class="prod-foot"><div class="prod-price">۱۸٬۲۰۰٬۰۰۰ ﺗ</div><span class="badge badge-warn">موجودی کم</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb">✨</div><div class="prod-body"><div class="prod-name">گوشواره‌ی یاقوت میخی</div><div class="prod-cat">گوشواره · طلای ۱۸ عیار</div><div class="prod-foot"><div class="prod-price">۱۲٬۷۰۰٬۰۰۰ ﺗ</div><span class="badge badge-err">ناموجود</span></div></div></div>
           <div class="prod-card" style="border-style:dashed;background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:200px;cursor:pointer;" onclick="openModal('prod')">
-            <div class="add-placeholder"><div class="plus">+</div><div class="lbl">Add Product</div></div>
+            <div class="add-placeholder"><div class="plus">+</div><div class="lbl">افزودن محصول</div></div>
           </div>
         </div>
       </div>
@@ -475,10 +478,10 @@
       <!-- GALLERY LAYOUT CONFIGURATOR -->
       <div class="section" id="sec-gallery">
         <div class="page-hdr">
-          <div><div class="page-title">Showroom Editor</div><div class="page-sub">Design your storefront landing page — hover to edit images, click text to edit</div></div>
+          <div><div class="page-title">ویرایش ویترین</div><div class="page-sub">صفحه‌ی اصلی فروشگاه را طراحی کنید — برای ویرایش تصاویر هاور کنید، برای ویرایش متن کلیک کنید</div></div>
           <div style="display:flex;gap:9px;">
-            <button class="btn btn-ghost btn-sm">↺ Reset</button>
-            <button class="btn btn-gold">Publish Changes</button>
+            <button class="btn btn-ghost btn-sm">↺ بازنشانی</button>
+            <button class="btn btn-gold">انتشار تغییرات</button>
           </div>
         </div>
 
@@ -487,12 +490,12 @@
           <div class="gal-controls">
             <!-- Style Picker -->
             <div class="card">
-              <div class="card-header"><div class="card-title">Layout Style</div></div>
+              <div class="card-header"><div class="card-title">سبک چیدمان</div></div>
               <div class="style-picker">
                 <div class="style-opt" data-style="magazine" onclick="switchStyle('magazine')">
                   <div class="style-thumb" style="background:linear-gradient(to bottom, oklch(96% 0.01 85) 0%, oklch(96% 0.01 85) 15%, oklch(88% 0.03 85) 15%, oklch(88% 0.03 85) 100%);"></div>
-                  <div class="style-name">Magazine</div>
-                  <div class="style-desc">Clean editorial hero</div>
+                  <div class="style-name">مجله‌ای</div>
+                  <div class="style-desc">هرو تحریریه و ساده</div>
                 </div>
                 <div class="style-opt active" data-style="mosaic" onclick="switchStyle('mosaic')">
                   <div class="style-thumb" style="background:linear-gradient(135deg, oklch(20% 0.02 55) 0%, oklch(25% 0.02 60) 100%); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr 1fr; gap:2px; padding:4px;">
@@ -502,33 +505,33 @@
                     <div style="background:oklch(32% 0.02 58);"></div>
                     <div style="background:oklch(30% 0.02 55);"></div>
                   </div>
-                  <div class="style-name">Mosaic</div>
-                  <div class="style-desc">Grid with text overlay</div>
+                  <div class="style-name">موزاییکی</div>
+                  <div class="style-desc">شبکه با متن روی تصویر</div>
                 </div>
                 <div class="style-opt" data-style="editorial" onclick="switchStyle('editorial')">
                   <div class="style-thumb" style="background:oklch(14% 0.015 55); display:flex; flex-direction:column; padding:6px;">
                     <div style="flex:1; background:linear-gradient(to bottom, oklch(55% 0.12 78), oklch(45% 0.10 75)); border-radius:3px; margin-bottom:4px;"></div>
                     <div style="height:12px; background:oklch(20% 0.02 55); border-radius:2px;"></div>
                   </div>
-                  <div class="style-name">Editorial</div>
-                  <div class="style-desc">Dark with collections</div>
+                  <div class="style-name">تحریریه</div>
+                  <div class="style-desc">تیره با مجموعه‌ها</div>
                 </div>
               </div>
             </div>
 
             <!-- Theme Colors -->
             <div class="card">
-              <div class="card-header"><div class="card-title">Theme Colors</div></div>
+              <div class="card-header"><div class="card-title">رنگ‌های تم</div></div>
               <div class="color-pickers">
                 <div class="color-pick">
-                  <div class="color-label">Primary (Accent)</div>
+                  <div class="color-label">رنگ اصلی</div>
                   <div class="color-row">
                     <input type="color" class="color-swatch" id="color-primary" value="#d4a574" onchange="updateThemeColor('primary', this.value)">
                     <input type="text" class="color-hex" id="hex-primary" value="#d4a574" onchange="updateThemeColor('primary', this.value)">
                   </div>
                 </div>
                 <div class="color-pick">
-                  <div class="color-label">Secondary</div>
+                  <div class="color-label">رنگ دوم</div>
                   <div class="color-row">
                     <input type="color" class="color-swatch" id="color-secondary" value="#f5e6d3" onchange="updateThemeColor('secondary', this.value)">
                     <input type="text" class="color-hex" id="hex-secondary" value="#f5e6d3" onchange="updateThemeColor('secondary', this.value)">
@@ -539,12 +542,12 @@
 
             <!-- Tips -->
             <div class="tips-card">
-              <div class="tip-title">How to edit</div>
+              <div class="tip-title">راهنمای ویرایش</div>
               <ul class="tip-list">
-                <li>Hover any image → Replace or Remove</li>
-                <li>Click any text → Edit inline</li>
-                <li>Images: 1080×1920px recommended</li>
-                <li>Use high-contrast photos for text overlays</li>
+                <li>روی هر تصویر هاور کنید ← جایگزینی یا حذف</li>
+                <li>روی هر متن کلیک کنید ← ویرایش درجا</li>
+                <li>ابعاد پیشنهادی تصویر: ۱۰۸۰×۱۹۲۰ پیکسل</li>
+                <li>برای متن روی عکس از تصاویر کنتراست‌بالا استفاده کنید</li>
               </ul>
             </div>
           </div>
@@ -564,8 +567,8 @@
 
                   <!-- Header text overlay -->
                   <div style="padding:16px 20px 12px; text-align:center;">
-                    <div style="font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,.5); margin-bottom:6px;">۱۴۰۳ · SHOWROOM</div>
-                    <div contenteditable="true" class="edit-text" style="font-size:22px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; line-height:1.4; direction:rtl;">نقره و طلا،<br>ساخته‌ی دست<br>انسان.</div>
+                    <div style="font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,.5); margin-bottom:6px;">۱۴۰۴ · ویترین</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:22px; color:#d4a574; font-family:Vazirmatn,sans-serif; line-height:1.4; direction:rtl; font-weight:300;">نقره و طلا،<br>ساخته‌ی دست<br>انسان.</div>
                   </div>
 
                   <!-- Mosaic Grid -->
@@ -573,36 +576,36 @@
                     <div class="preview-slot" style="grid-row:1/3; background:linear-gradient(135deg, oklch(25% 0.02 60), oklch(18% 0.02 55)); display:flex; align-items:center; justify-content:center;">
                       <span style="font-size:48px;">💍</span>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                     <div class="preview-slot" style="background:linear-gradient(135deg, oklch(22% 0.02 58), oklch(16% 0.02 55)); display:flex; align-items:center; justify-content:center;">
                       <span style="font-size:36px;">✨</span>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                     <div class="preview-slot" style="background:linear-gradient(135deg, oklch(28% 0.02 62), oklch(20% 0.02 58)); display:flex; align-items:center; justify-content:center;">
                       <span style="font-size:36px;">💎</span>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                     <div class="preview-slot" style="background:linear-gradient(135deg, oklch(24% 0.02 55), oklch(18% 0.02 52)); display:flex; align-items:center; justify-content:center;">
                       <span style="font-size:32px;">🌙</span>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                     <div class="preview-slot" style="background:linear-gradient(135deg, oklch(26% 0.02 58), oklch(19% 0.02 54)); display:flex; align-items:center; justify-content:center;">
                       <span style="font-size:32px;">🔗</span>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                   </div>
@@ -627,8 +630,8 @@
 
                   <!-- Magazine header -->
                   <div style="padding:10px 20px; text-align:center; border-bottom:1px solid rgba(0,0,0,.08);">
-                    <div style="font-size:9px; letter-spacing:0.15em; color:rgba(0,0,0,.4);">ISSUE 02 · ۱۴۰۳</div>
-                    <div contenteditable="true" class="edit-text" style="font-size:32px; font-family:'Cormorant Garamond',Georgia,serif; font-weight:300; letter-spacing:0.08em; color:#1c1b1a; margin:6px 0;">Tala</div>
+                    <div style="font-size:10px; letter-spacing:0.12em; color:rgba(0,0,0,.4);">شماره‌ی دوم · ۱۴۰۴</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:32px; font-family:Vazirmatn,sans-serif; font-weight:300; letter-spacing:0.08em; color:#1c1b1a; margin:6px 0;">تالا</div>
                     <div contenteditable="true" class="edit-text" style="font-size:12px; color:#666; direction:rtl;">کارگاه گوهر و طلا</div>
                     <div style="width:40px; height:1px; background:#1c1b1a; margin:10px auto 0;"></div>
                   </div>
@@ -637,8 +640,8 @@
                   <div class="preview-slot" style="flex:1; background:linear-gradient(to bottom, #e8e0d5, #d4c8b8); display:flex; align-items:center; justify-content:center; margin:12px;">
                     <span style="font-size:72px;">👩</span>
                     <div class="slot-actions">
-                      <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                      <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                      <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                     </div>
                   </div>
 
@@ -664,29 +667,29 @@
                   <div class="preview-slot" style="height:180px; background:linear-gradient(135deg, #d4a574 0%, #c4956a 50%, #8b6914 100%); display:flex; align-items:center; justify-content:center; position:relative;">
                     <span style="font-size:56px;">💎</span>
                     <div class="slot-actions">
-                      <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                      <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                      <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                     </div>
                   </div>
 
                   <!-- Brand + welcome -->
                   <div style="padding:20px; text-align:center;">
-                    <div style="font-size:11px; letter-spacing:0.35em; color:rgba(255,255,255,.35); margin-bottom:4px;">FINE JEWELRY</div>
-                    <div contenteditable="true" class="edit-text" style="font-size:28px; font-family:'Cormorant Garamond',Georgia,serif; letter-spacing:0.2em; color:#d4a574;">TALA</div>
-                    <div contenteditable="true" class="edit-text" style="font-size:18px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; margin-top:16px; direction:rtl; line-height:1.5;">به ویترین تالا<br>خوش آمدید</div>
+                    <div style="font-size:11px; letter-spacing:0.35em; color:rgba(255,255,255,.35); margin-bottom:4px;">جواهراتِ نفیس</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:28px; font-family:Vazirmatn,sans-serif; letter-spacing:0.2em; color:#d4a574; font-weight:300;">تالا</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:18px; color:#d4a574; font-family:Vazirmatn,sans-serif; margin-top:16px; direction:rtl; line-height:1.5; font-weight:300;">به ویترین تالا<br>خوش آمدید</div>
                     <div contenteditable="true" class="edit-text" style="font-size:11px; color:rgba(255,255,255,.5); margin-top:10px; direction:rtl; line-height:1.6;">گزیده‌ای از زیورآلات دست‌ساز ایرانی<br>که هر یک، روایتی از ذوق و هنر است.</div>
                   </div>
 
                   <!-- Collections section -->
                   <div style="padding:0 20px;">
-                    <div style="font-size:9px; letter-spacing:0.2em; color:#d4a574; margin-bottom:8px;">COLLECTIONS</div>
-                    <div contenteditable="true" class="edit-text" style="font-size:16px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; direction:rtl; margin-bottom:12px;">مجموعه‌های روز</div>
+                    <div style="font-size:10px; letter-spacing:0.2em; color:#d4a574; margin-bottom:8px;">مجموعه‌ها</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:16px; color:#d4a574; font-family:Vazirmatn,sans-serif; direction:rtl; margin-bottom:12px;">مجموعه‌های روز</div>
                     <div class="preview-slot" style="height:80px; background:linear-gradient(135deg, oklch(20% 0.02 55), oklch(15% 0.02 52)); border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative;">
                       <span style="font-size:28px;">✨</span>
-                      <div style="position:absolute; top:8px; right:8px; background:#d4a574; color:#0e0d0c; font-size:9px; padding:3px 8px; border-radius:4px;">مجموعه برتر</div>
+                      <div style="position:absolute; top:8px; left:8px; background:#d4a574; color:#0e0d0c; font-size:10px; padding:3px 8px; border-radius:4px;">مجموعه برتر</div>
                       <div class="slot-actions">
-                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
-                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                        <button class="slot-act" onclick="alert('جایگزینی تصویر')">جایگزینی</button>
+                        <button class="slot-act del" onclick="alert('حذف تصویر')">حذف</button>
                       </div>
                     </div>
                   </div>
@@ -712,106 +715,106 @@
       <!-- INVOICES -->
       <div class="section" id="sec-invoices">
         <div class="page-hdr">
-          <div><div class="page-title">Invoices</div><div class="page-sub">1,048 total · 3 pending</div></div>
+          <div><div class="page-title">فاکتورها</div><div class="page-sub">۱٬۰۴۸ فاکتور · ۳ در انتظار</div></div>
           <div class="pills" id="inv-pills">
-            <span class="pill active">All</span><span class="pill">Paid</span><span class="pill">Pending</span><span class="pill">Draft</span>
+            <span class="pill active">همه</span><span class="pill">پرداخت‌شده</span><span class="pill">در انتظار</span><span class="pill">پیش‌نویس</span>
           </div>
         </div>
         <div class="card">
-          <div class="inv-row"><div class="inv-id">#1048</div><div class="inv-cust"><div class="n">Sahar Moradi</div><div class="p">+98 912 345 6789</div></div><div class="inv-amt">₺8,200</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 17</div></div>
-          <div class="inv-row"><div class="inv-id">#1047</div><div class="inv-cust"><div class="n">Reza Ahmadi</div><div class="p">+98 935 678 1234</div></div><div class="inv-amt">₺15,400</div><span class="badge badge-warn">Pending</span><div class="inv-date">May 16</div></div>
-          <div class="inv-row"><div class="inv-id">#1046</div><div class="inv-cust"><div class="n">Mina Tehrani</div><div class="p">+98 901 234 5678</div></div><div class="inv-amt">₺3,600</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 15</div></div>
-          <div class="inv-row"><div class="inv-id">#1045</div><div class="inv-cust"><div class="n">Ali Karimi</div><div class="p">+98 913 456 7890</div></div><div class="inv-amt">₺22,100</div><span class="badge badge-dim">Draft</span><div class="inv-date">May 14</div></div>
-          <div class="inv-row"><div class="inv-id">#1044</div><div class="inv-cust"><div class="n">Nasrin Hosseini</div><div class="p">+98 921 789 0123</div></div><div class="inv-amt">₺11,800</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 13</div></div>
+          <div class="inv-row"><div class="inv-id">#۱۰۴۸</div><div class="inv-cust"><div class="n">سحر مرادی</div><div class="p">۰۹۱۲ ۳۴۵ ۶۷۸۹</div></div><div class="inv-amt">۸٬۲۰۰٬۰۰۰ ﺗ</div><span class="badge badge-ok">پرداخت‌شده</span><div class="inv-date">۲۷ اردیبهشت</div></div>
+          <div class="inv-row"><div class="inv-id">#۱۰۴۷</div><div class="inv-cust"><div class="n">رضا احمدی</div><div class="p">۰۹۳۵ ۶۷۸ ۱۲۳۴</div></div><div class="inv-amt">۱۵٬۴۰۰٬۰۰۰ ﺗ</div><span class="badge badge-warn">در انتظار</span><div class="inv-date">۲۶ اردیبهشت</div></div>
+          <div class="inv-row"><div class="inv-id">#۱۰۴۶</div><div class="inv-cust"><div class="n">مینا تهرانی</div><div class="p">۰۹۰۱ ۲۳۴ ۵۶۷۸</div></div><div class="inv-amt">۳٬۶۰۰٬۰۰۰ ﺗ</div><span class="badge badge-ok">پرداخت‌شده</span><div class="inv-date">۲۵ اردیبهشت</div></div>
+          <div class="inv-row"><div class="inv-id">#۱۰۴۵</div><div class="inv-cust"><div class="n">علی کریمی</div><div class="p">۰۹۱۳ ۴۵۶ ۷۸۹۰</div></div><div class="inv-amt">۲۲٬۱۰۰٬۰۰۰ ﺗ</div><span class="badge badge-dim">پیش‌نویس</span><div class="inv-date">۲۴ اردیبهشت</div></div>
+          <div class="inv-row"><div class="inv-id">#۱۰۴۴</div><div class="inv-cust"><div class="n">نسرین حسینی</div><div class="p">۰۹۲۱ ۷۸۹ ۰۱۲۳</div></div><div class="inv-amt">۱۱٬۸۰۰٬۰۰۰ ﺗ</div><span class="badge badge-ok">پرداخت‌شده</span><div class="inv-date">۲۳ اردیبهشت</div></div>
         </div>
       </div>
 
       <!-- PRICE BOARD -->
       <div class="section" id="sec-priceboard">
         <div class="page-hdr">
-          <div><div class="page-title">Price Board</div><div class="page-sub">Live market prices for shop reference</div></div>
+          <div><div class="page-title">قیمت روز</div><div class="page-sub">قیمت لحظه‌ای بازار برای استفاده‌ی فروشگاه</div></div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Gold Prices</div>
+            <div class="card-title">قیمت طلا</div>
           </div>
           <div class="price-list">
             <div class="price-entry">
               <div class="pe-main">
-                <div class="pe-name">Gold 24K</div>
-                <div class="pe-unit">per gram</div>
+                <div class="pe-name">طلای ۲۴ عیار</div>
+                <div class="pe-unit">هر گرم</div>
               </div>
-              <div class="pe-price">₺2,845</div>
-              <div class="pe-trend up">↑ 1.8%</div>
-              <div class="pe-updated">Updated 2 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+              <div class="pe-price">۵٬۰۹۸٬۲۰۰ ﺗ</div>
+              <div class="pe-trend up">↑ ۱٫۸٪</div>
+              <div class="pe-updated">بروزرسانی ۲ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
             </div>
             <div class="price-entry">
               <div class="pe-main">
-                <div class="pe-name">Gold 22K</div>
-                <div class="pe-unit">per gram</div>
+                <div class="pe-name">طلای ۲۲ عیار</div>
+                <div class="pe-unit">هر گرم</div>
               </div>
-              <div class="pe-price">₺2,610</div>
-              <div class="pe-trend up">↑ 1.6%</div>
-              <div class="pe-updated">Updated 2 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+              <div class="pe-price">۴٬۶۷۲٬۱۰۰ ﺗ</div>
+              <div class="pe-trend up">↑ ۱٫۶٪</div>
+              <div class="pe-updated">بروزرسانی ۲ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
             </div>
             <div class="price-entry">
               <div class="pe-main">
-                <div class="pe-name">Gold 18K</div>
-                <div class="pe-unit">per gram</div>
+                <div class="pe-name">طلای ۱۸ عیار</div>
+                <div class="pe-unit">هر گرم</div>
               </div>
-              <div class="pe-price">₺2,135</div>
-              <div class="pe-trend down">↓ 0.4%</div>
-              <div class="pe-updated">Updated 5 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Silver & Other Metals</div>
-          </div>
-          <div class="price-list">
-            <div class="price-entry">
-              <div class="pe-main">
-                <div class="pe-name">Silver 925</div>
-                <div class="pe-unit">per gram</div>
-              </div>
-              <div class="pe-price">₺32</div>
-              <div class="pe-trend up">↑ 2.1%</div>
-              <div class="pe-updated">Updated 8 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+              <div class="pe-price">۳٬۸۲۴٬۵۰۰ ﺗ</div>
+              <div class="pe-trend down">↓ ۰٫۴٪</div>
+              <div class="pe-updated">بروزرسانی ۵ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Exchange Rates</div>
+            <div class="card-title">نقره و سایر فلزات</div>
           </div>
           <div class="price-list">
             <div class="price-entry">
               <div class="pe-main">
-                <div class="pe-name">USD / TRY</div>
-                <div class="pe-unit">1 USD</div>
+                <div class="pe-name">نقره‌ی ۹۲۵</div>
+                <div class="pe-unit">هر گرم</div>
               </div>
-              <div class="pe-price">₺28.54</div>
-              <div class="pe-trend down">↓ 0.2%</div>
-              <div class="pe-updated">Updated 1 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+              <div class="pe-price">۲۸٬۴۲۰ ﺗ</div>
+              <div class="pe-trend up">↑ ۲٫۱٪</div>
+              <div class="pe-updated">بروزرسانی ۸ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">نرخ ارز</div>
+          </div>
+          <div class="price-list">
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">دلار آمریکا</div>
+                <div class="pe-unit">۱ دلار</div>
+              </div>
+              <div class="pe-price">۸۵٬۲۴۰ ﺗ</div>
+              <div class="pe-trend down">↓ ۰٫۲٪</div>
+              <div class="pe-updated">بروزرسانی ۱ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
             </div>
             <div class="price-entry">
               <div class="pe-main">
-                <div class="pe-name">EUR / TRY</div>
-                <div class="pe-unit">1 EUR</div>
+                <div class="pe-name">یورو</div>
+                <div class="pe-unit">۱ یورو</div>
               </div>
-              <div class="pe-price">₺31.28</div>
-              <div class="pe-trend up">↑ 0.6%</div>
-              <div class="pe-updated">Updated 1 min ago</div>
-              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+              <div class="pe-price">۹۲٬۸۱۰ ﺗ</div>
+              <div class="pe-trend up">↑ ۰٫۶٪</div>
+              <div class="pe-updated">بروزرسانی ۱ دقیقه پیش</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('ویرایش قیمت')">ویرایش</button>
             </div>
           </div>
         </div>
@@ -824,45 +827,45 @@
 <!-- ══ MODAL: Add Customer ══ -->
 <div class="modal-overlay" id="modal-cust">
   <div class="modal">
-    <div class="modal-hdr"><div><div class="modal-title">Add Customer</div><div class="modal-sub">Register a new customer</div></div><button class="modal-x" onclick="closeModal('cust')">×</button></div>
+    <div class="modal-hdr"><div><div class="modal-title">افزودن مشتری</div><div class="modal-sub">ثبت مشتری جدید</div></div><button class="modal-x" onclick="closeModal('cust')">×</button></div>
     <div class="modal-body">
       <div class="frow">
-        <div class="fgrp"><label class="flabel">First Name</label><input class="finput" type="text" placeholder="Sahar"></div>
-        <div class="fgrp"><label class="flabel">Last Name</label><input class="finput" type="text" placeholder="Moradi"></div>
+        <div class="fgrp"><label class="flabel">نام</label><input class="finput" type="text" placeholder="سحر"></div>
+        <div class="fgrp"><label class="flabel">نام خانوادگی</label><input class="finput" type="text" placeholder="مرادی"></div>
       </div>
-      <div class="fgrp"><label class="flabel">Phone Number</label><input class="finput" type="tel" placeholder="+98 912 345 6789" style="font-family:var(--font-mono)"></div>
-      <div class="fgrp"><label class="flabel">Notes</label><textarea class="finput ftarea" placeholder="Any notes about this customer…"></textarea></div>
+      <div class="fgrp"><label class="flabel">شماره تماس</label><input class="finput" type="tel" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" style="font-family:var(--font-mono)"></div>
+      <div class="fgrp"><label class="flabel">یادداشت</label><textarea class="finput ftarea" placeholder="یادداشت‌هایی درباره‌ی این مشتری…"></textarea></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('cust')">Cancel</button><button class="btn btn-primary">Add Customer</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('cust')">انصراف</button><button class="btn btn-primary">افزودن مشتری</button></div>
   </div>
 </div>
 
 <!-- ══ MODAL: Add Product ══ -->
 <div class="modal-overlay" id="modal-prod">
   <div class="modal">
-    <div class="modal-hdr"><div><div class="modal-title">Add Product</div><div class="modal-sub">Add to the store catalog</div></div><button class="modal-x" onclick="closeModal('prod')">×</button></div>
+    <div class="modal-hdr"><div><div class="modal-title">افزودن محصول</div><div class="modal-sub">افزودن به کاتالوگ فروشگاه</div></div><button class="modal-x" onclick="closeModal('prod')">×</button></div>
     <div class="modal-body">
       <div class="fgrp">
-        <label class="flabel">Product Photo</label>
+        <label class="flabel">عکس محصول</label>
         <div class="upload" onclick="this.querySelector('input').click()">
           <input type="file" accept="image/*" style="display:none">
           <div class="upload-ico">🖼</div>
-          <div class="upload-txt">Click to upload photo</div>
-          <div class="upload-hint">JPG or PNG · max 10 MB</div>
+          <div class="upload-txt">برای بارگذاری عکس کلیک کنید</div>
+          <div class="upload-hint">JPG یا PNG · حداکثر ۱۰ مگابایت</div>
         </div>
       </div>
-      <div class="fgrp"><label class="flabel">Product Name</label><input class="finput" type="text" placeholder="Diamond Solitaire Ring"></div>
+      <div class="fgrp"><label class="flabel">نام محصول</label><input class="finput" type="text" placeholder="انگشتر سولیتر الماس"></div>
       <div class="frow">
-        <div class="fgrp"><label class="flabel">Category</label><select class="finput fselect"><option>Rings</option><option>Necklaces</option><option>Bracelets</option><option>Earrings</option></select></div>
-        <div class="fgrp"><label class="flabel">Material</label><select class="finput fselect"><option>18K Gold</option><option>24K Gold</option><option>Silver</option><option>White Gold</option></select></div>
+        <div class="fgrp"><label class="flabel">دسته‌بندی</label><select class="finput fselect"><option>انگشتر</option><option>گردنبند</option><option>دستبند</option><option>گوشواره</option></select></div>
+        <div class="fgrp"><label class="flabel">جنس</label><select class="finput fselect"><option>طلای ۱۸ عیار</option><option>طلای ۲۴ عیار</option><option>نقره</option><option>طلای سفید</option></select></div>
       </div>
       <div class="frow">
-        <div class="fgrp"><label class="flabel">Price (₺)</label><input class="finput" type="number" placeholder="0" style="font-family:var(--font-mono)"></div>
-        <div class="fgrp"><label class="flabel">Stock Qty</label><input class="finput" type="number" placeholder="0" min="0"></div>
+        <div class="fgrp"><label class="flabel">قیمت (تومان)</label><input class="finput" type="number" placeholder="۰" style="font-family:var(--font-mono)"></div>
+        <div class="fgrp"><label class="flabel">موجودی</label><input class="finput" type="number" placeholder="۰" min="0"></div>
       </div>
-      <div class="fgrp"><label class="flabel">Description</label><textarea class="finput ftarea" placeholder="Material, dimensions, gemstone details…"></textarea></div>
+      <div class="fgrp"><label class="flabel">توضیحات</label><textarea class="finput ftarea" placeholder="جنس، ابعاد، مشخصات نگین…"></textarea></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('prod')">Cancel</button><button class="btn btn-primary">Add Product</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('prod')">انصراف</button><button class="btn btn-primary">افزودن محصول</button></div>
   </div>
 </div>
 
@@ -870,62 +873,62 @@
 <div class="modal-overlay" id="modal-post">
   <div class="modal" style="width:580px;max-width:95vw">
     <div class="modal-hdr">
-      <div><div class="modal-title">New Gallery Post</div><div class="modal-sub" id="post-sub">Select a photo to get started</div></div>
+      <div><div class="modal-title">پست جدید گالری</div><div class="modal-sub" id="post-sub">برای شروع یک عکس انتخاب کنید</div></div>
       <button class="modal-x" onclick="closeModal('post');resetPost()">×</button>
     </div>
     <div class="modal-body">
       <div class="steps">
-        <div class="step active" id="ps1"><div class="step-num">1</div><div class="step-lbl">Upload Photo</div></div>
+        <div class="step active" id="ps1"><div class="step-num">۱</div><div class="step-lbl">بارگذاری عکس</div></div>
         <div class="step-line"></div>
-        <div class="step" id="ps2"><div class="step-num">2</div><div class="step-lbl">Add Details</div></div>
+        <div class="step" id="ps2"><div class="step-num">۲</div><div class="step-lbl">افزودن جزییات</div></div>
         <div class="step-line"></div>
-        <div class="step" id="ps3"><div class="step-num">3</div><div class="step-lbl">Publish</div></div>
+        <div class="step" id="ps3"><div class="step-num">۳</div><div class="step-lbl">انتشار</div></div>
       </div>
 
       <div class="spanel active" id="pp1">
         <div class="upload" id="post-up" onclick="document.getElementById('post-file').click()">
           <input type="file" id="post-file" accept="image/*" style="display:none" onchange="previewPost(this)">
           <div class="upload-ico">📸</div>
-          <div class="upload-txt">Select product photo</div>
-          <div class="upload-hint">Square images work best · JPG or PNG</div>
+          <div class="upload-txt">عکس محصول را انتخاب کنید</div>
+          <div class="upload-hint">تصاویر مربعی بهترین نتیجه را دارند · JPG یا PNG</div>
         </div>
         <div id="post-prev" style="display:none;margin-top:14px">
           <img id="post-prev-img" style="width:100%;border-radius:var(--r);max-height:300px;object-fit:cover">
-          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="document.getElementById('post-file').click()">Change photo</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="document.getElementById('post-file').click()">تغییر عکس</button>
         </div>
       </div>
 
       <div class="spanel" id="pp2">
-        <div class="fgrp"><label class="flabel">Caption</label><textarea class="finput ftarea" placeholder="Describe the piece — material, craftsmanship, collection…"></textarea></div>
+        <div class="fgrp"><label class="flabel">متن پست</label><textarea class="finput ftarea" placeholder="قطعه را توصیف کنید — جنس، ساخت، مجموعه…"></textarea></div>
         <div class="frow">
-          <div class="fgrp"><label class="flabel">Price (optional)</label><input class="finput" type="number" placeholder="12500" style="font-family:var(--font-mono)"></div>
-          <div class="fgrp"><label class="flabel">Tag</label><select class="finput fselect"><option>New Arrival</option><option>Featured</option><option>Sale</option><option>Collection</option></select></div>
+          <div class="fgrp"><label class="flabel">قیمت (اختیاری)</label><input class="finput" type="number" placeholder="۱۲٬۵۰۰٬۰۰۰" style="font-family:var(--font-mono)"></div>
+          <div class="fgrp"><label class="flabel">برچسب</label><select class="finput fselect"><option>تازه</option><option>ویژه</option><option>تخفیف</option><option>مجموعه</option></select></div>
         </div>
         <div class="fgrp">
-          <label class="flabel">Category</label>
+          <label class="flabel">دسته‌بندی</label>
           <div class="pills" style="margin-top:2px" id="post-cats">
-            <span class="pill active" onclick="togglePill(this,'post-cats')">Rings</span>
-            <span class="pill" onclick="togglePill(this,'post-cats')">Necklaces</span>
-            <span class="pill" onclick="togglePill(this,'post-cats')">Bracelets</span>
-            <span class="pill" onclick="togglePill(this,'post-cats')">Earrings</span>
+            <span class="pill active" onclick="togglePill(this,'post-cats')">انگشتر</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">گردنبند</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">دستبند</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">گوشواره</span>
           </div>
         </div>
       </div>
 
       <div class="spanel" id="pp3" style="text-align:center;padding:12px 0">
         <div style="font-size:50px;margin-bottom:14px">✓</div>
-        <div style="font-family:var(--font-display);font-size:22px;font-weight:500;margin-bottom:6px">Ready to Publish</div>
-        <div style="font-size:13px;color:var(--muted);max-width:300px;margin:0 auto 20px">Your post will appear in the Tala gallery for customers to browse and save.</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:500;margin-bottom:6px">آماده‌ی انتشار</div>
+        <div style="font-size:13px;color:var(--muted);max-width:300px;margin:0 auto 20px">پست شما در گالری تالا نمایش داده می‌شود تا مشتریان آن را ببینند و ذخیره کنند.</div>
         <div style="display:flex;gap:10px;justify-content:center">
-          <button class="btn btn-ghost" onclick="postGo(2)">← Edit Details</button>
-          <button class="btn btn-gold" onclick="closeModal('post');resetPost()">Publish Post</button>
+          <button class="btn btn-ghost" onclick="postGo(2)">→ ویرایش جزییات</button>
+          <button class="btn btn-gold" onclick="closeModal('post');resetPost()">انتشار پست</button>
         </div>
       </div>
     </div>
 
     <div class="modal-foot" id="post-foot" style="justify-content:space-between">
-      <button class="btn btn-ghost" id="post-back" style="visibility:hidden" onclick="postGo(postStep-1)">← Back</button>
-      <button class="btn btn-primary" id="post-next" onclick="postGo(postStep+1)">Next →</button>
+      <button class="btn btn-ghost" id="post-back" style="visibility:hidden" onclick="postGo(postStep-1)">→ قبل</button>
+      <button class="btn btn-primary" id="post-next" onclick="postGo(postStep+1)">بعد ←</button>
     </div>
   </div>
 </div>
@@ -934,38 +937,38 @@
 <div class="modal-overlay" id="modal-inv">
   <div class="modal" style="width:580px;max-width:95vw">
     <div class="modal-hdr">
-      <div><div class="modal-title">New Invoice</div><div class="modal-sub" id="inv-sub">Enter the customer's phone number</div></div>
+      <div><div class="modal-title">فاکتور جدید</div><div class="modal-sub" id="inv-sub">شماره تماس مشتری را وارد کنید</div></div>
       <button class="modal-x" onclick="closeModal('inv');resetInv()">×</button>
     </div>
     <div class="modal-body">
       <div class="steps">
-        <div class="step active" id="is1"><div class="step-num">1</div><div class="step-lbl">Customer</div></div>
+        <div class="step active" id="is1"><div class="step-num">۱</div><div class="step-lbl">مشتری</div></div>
         <div class="step-line"></div>
-        <div class="step" id="is2"><div class="step-num">2</div><div class="step-lbl">ID Photo</div></div>
+        <div class="step" id="is2"><div class="step-num">۲</div><div class="step-lbl">کارت ملی</div></div>
         <div class="step-line"></div>
-        <div class="step" id="is3"><div class="step-num">3</div><div class="step-lbl">Receipt</div></div>
+        <div class="step" id="is3"><div class="step-num">۳</div><div class="step-lbl">رسید</div></div>
       </div>
 
       <!-- Step 1: Phone + Items -->
       <div class="spanel active" id="ip1">
         <div class="fgrp">
-          <label class="flabel">Customer Phone Number</label>
-          <input class="finput" type="tel" id="inv-phone" placeholder="+98 912 345 6789" style="font-size:17px;padding:13px;font-family:var(--font-mono)">
+          <label class="flabel">شماره تماس مشتری</label>
+          <input class="finput" type="tel" id="inv-phone" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" style="font-size:17px;padding:13px;font-family:var(--font-mono)">
         </div>
         <div id="inv-found" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px;margin-bottom:14px">
           <div style="display:flex;align-items:center;gap:10px">
-            <div class="av">S</div>
-            <div><div style="font-weight:600;font-size:13px">Sahar Moradi</div><div style="font-size:12px;color:var(--muted)">7 purchases · ₺84,200 lifetime</div></div>
-            <span class="badge badge-ok" style="margin-left:auto">Found</span>
+            <div class="av">س</div>
+            <div><div style="font-weight:600;font-size:13px">سحر مرادی</div><div style="font-size:12px;color:var(--muted)">۷ خرید · مجموع ۸۴٬۲۰۰٬۰۰۰ تومان</div></div>
+            <span class="badge badge-ok" style="margin-right:auto">یافت شد</span>
           </div>
         </div>
         <div class="fgrp">
-          <label class="flabel">Item / Product</label>
-          <select class="finput fselect"><option value="">Select product…</option><option>Diamond Solitaire Ring — ₺24,500</option><option>Pearl Drop Necklace — ₺8,900</option><option>Gold Chain Bracelet — ₺18,200</option><option>Ruby Stud Earrings — ₺12,700</option></select>
+          <label class="flabel">کالا / محصول</label>
+          <select class="finput fselect"><option value="">محصول را انتخاب کنید…</option><option>انگشتر سولیتر الماس — ۲۴٬۵۰۰٬۰۰۰ تومان</option><option>گردنبند آویز مروارید — ۸٬۹۰۰٬۰۰۰ تومان</option><option>دستبند طلای زنجیری — ۱۸٬۲۰۰٬۰۰۰ تومان</option><option>گوشواره‌ی یاقوت میخی — ۱۲٬۷۰۰٬۰۰۰ تومان</option></select>
         </div>
         <div class="frow">
-          <div class="fgrp"><label class="flabel">Amount (₺)</label><input class="finput" type="number" placeholder="0" style="font-family:var(--font-mono)"></div>
-          <div class="fgrp"><label class="flabel">Note (optional)</label><input class="finput" type="text" placeholder="e.g. deposit, gift"></div>
+          <div class="fgrp"><label class="flabel">مبلغ (تومان)</label><input class="finput" type="number" placeholder="۰" style="font-family:var(--font-mono)"></div>
+          <div class="fgrp"><label class="flabel">یادداشت (اختیاری)</label><input class="finput" type="text" placeholder="مثلاً بیعانه، هدیه"></div>
         </div>
       </div>
 
@@ -973,14 +976,14 @@
       <div class="spanel" id="ip2">
         <div style="text-align:center;margin-bottom:18px">
           <div style="font-size:46px;margin-bottom:8px">🪪</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:4px">Customer ID Photo</div>
-          <div style="font-size:12px;color:var(--muted)">Take or upload a photo of the customer's national ID card</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">عکس کارت ملی مشتری</div>
+          <div style="font-size:12px;color:var(--muted)">از کارت ملی مشتری عکس بگیرید یا تصویری بارگذاری کنید</div>
         </div>
         <div class="upload" onclick="document.getElementById('inv-id-file').click()">
           <input type="file" id="inv-id-file" accept="image/*" capture="environment" style="display:none">
           <div class="upload-ico">📷</div>
-          <div class="upload-txt">Tap to take or upload photo</div>
-          <div class="upload-hint">Stored securely for verification only</div>
+          <div class="upload-txt">برای عکس‌گرفتن یا بارگذاری ضربه بزنید</div>
+          <div class="upload-hint">فقط برای تأیید هویت ذخیره می‌شود</div>
         </div>
       </div>
 
@@ -988,30 +991,30 @@
       <div class="spanel" id="ip3">
         <div style="text-align:center;margin-bottom:18px">
           <div style="font-size:46px;margin-bottom:8px">🧾</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:4px">Receipt Photo</div>
-          <div style="font-size:12px;color:var(--muted)">Upload the signed receipt or payment confirmation</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">عکس رسید</div>
+          <div style="font-size:12px;color:var(--muted)">رسید امضاشده یا تأیید پرداخت را بارگذاری کنید</div>
         </div>
         <div class="upload" onclick="document.getElementById('inv-rcpt-file').click()" style="margin-bottom:16px">
           <input type="file" id="inv-rcpt-file" accept="image/*" capture="environment" style="display:none">
           <div class="upload-ico">📋</div>
-          <div class="upload-txt">Tap to take or upload receipt</div>
-          <div class="upload-hint">JPG or PNG · max 20 MB</div>
+          <div class="upload-txt">برای عکس‌گرفتن یا بارگذاری رسید ضربه بزنید</div>
+          <div class="upload-hint">JPG یا PNG · حداکثر ۲۰ مگابایت</div>
         </div>
         <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px">
-          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Invoice Summary</div>
-          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>Customer</span><span style="font-weight:600">Sahar Moradi</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>Item</span><span style="font-weight:600">Diamond Solitaire Ring</span></div>
+          <div style="font-size:11px;letter-spacing:0.06em;color:var(--muted);margin-bottom:10px">خلاصه‌ی فاکتور</div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>مشتری</span><span style="font-weight:600">سحر مرادی</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>کالا</span><span style="font-weight:600">انگشتر سولیتر الماس</span></div>
           <div style="display:flex;justify-content:space-between;font-size:15px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
-            <span style="font-weight:600">Total</span>
-            <span style="font-weight:700;font-family:var(--font-mono);color:var(--accent)">₺24,500</span>
+            <span style="font-weight:600">مجموع</span>
+            <span style="font-weight:700;font-family:var(--font-mono);color:var(--accent)">۲۴٬۵۰۰٬۰۰۰ ﺗ</span>
           </div>
         </div>
       </div>
     </div>
 
     <div class="modal-foot" style="justify-content:space-between">
-      <button class="btn btn-ghost" id="inv-back" style="visibility:hidden" onclick="invGo(invStep-1)">← Back</button>
-      <button class="btn btn-primary" id="inv-next" onclick="invGo(invStep+1)">Next →</button>
+      <button class="btn btn-ghost" id="inv-back" style="visibility:hidden" onclick="invGo(invStep-1)">→ قبل</button>
+      <button class="btn btn-primary" id="inv-next" onclick="invGo(invStep+1)">بعد ←</button>
     </div>
   </div>
 </div>
@@ -1020,84 +1023,84 @@
 <div class="cd-backdrop" id="cd-backdrop" onclick="closeCustDrawer()"></div>
 <div class="cust-drawer" id="cust-drawer">
   <div class="cd-hdr">
-    <div class="cd-av" id="cd-av">S</div>
+    <div class="cd-av" id="cd-av">س</div>
     <div class="cd-info">
-      <div class="cd-name" id="cd-name">Sahar Moradi</div>
-      <div class="cd-phone" id="cd-phone">+98 912 345 6789</div>
-      <div class="cd-joined">Customer since <span id="cd-joined">Jan 2024</span></div>
+      <div class="cd-name" id="cd-name">سحر مرادی</div>
+      <div class="cd-phone" id="cd-phone">۰۹۱۲ ۳۴۵ ۶۷۸۹</div>
+      <div class="cd-joined">مشتری از <span id="cd-joined">دی ۱۴۰۲</span></div>
     </div>
     <div class="cd-actions">
-      <button class="cd-act-btn edit" title="Edit Customer" onclick="closeCustDrawer();setTimeout(()=>openEditCust(window._cdCurrent.firstName,window._cdCurrent.lastName,window._cdCurrent.phone,window._cdCurrent.notes),50)">✎</button>
-      <button class="cd-act-btn block" title="Block Customer" onclick="blockCustomer()">⊘</button>
-      <button class="cd-act-btn delete" title="Delete Customer" onclick="deleteCustomer()">🗑</button>
+      <button class="cd-act-btn edit" title="ویرایش مشتری" onclick="closeCustDrawer();setTimeout(()=>openEditCust(window._cdCurrent.firstName,window._cdCurrent.lastName,window._cdCurrent.phone,window._cdCurrent.notes),50)">✎</button>
+      <button class="cd-act-btn block" title="مسدودسازی مشتری" onclick="blockCustomer()">⊘</button>
+      <button class="cd-act-btn delete" title="حذف مشتری" onclick="deleteCustomer()">🗑</button>
     </div>
     <button class="cd-close" onclick="closeCustDrawer()">×</button>
   </div>
   <div class="cd-body">
     <div class="cd-section">
-      <div class="cd-sec-title">Overview</div>
+      <div class="cd-sec-title">کلیات</div>
       <div class="cd-metrics">
-        <div class="cd-metric"><div class="cd-m-label">Total Spent</div><div class="cd-m-val" id="cd-total">₺84,200</div><div class="cd-m-sub" id="cd-total-sub">across 7 orders</div></div>
-        <div class="cd-metric"><div class="cd-m-label">Avg Order</div><div class="cd-m-val" id="cd-avg">₺12,028</div><div class="cd-m-sub">per purchase</div></div>
-        <div class="cd-metric"><div class="cd-m-label">Last Visit</div><div class="cd-m-val" style="font-size:12px;font-family:var(--font-body);font-weight:600" id="cd-last-visit">May 17, 2026</div><div class="cd-m-sub" id="cd-visit-ago">2 hours ago</div></div>
-        <div class="cd-metric"><div class="cd-m-label">Avg Session</div><div class="cd-m-val" id="cd-session">8m 24s</div><div class="cd-m-sub">per visit</div></div>
+        <div class="cd-metric"><div class="cd-m-label">مجموع خرید</div><div class="cd-m-val" id="cd-total">۸۴٬۲۰۰٬۰۰۰ ﺗ</div><div class="cd-m-sub" id="cd-total-sub">در ۷ سفارش</div></div>
+        <div class="cd-metric"><div class="cd-m-label">میانگین هر سفارش</div><div class="cd-m-val" id="cd-avg">۱۲٬۰۲۸٬۰۰۰ ﺗ</div><div class="cd-m-sub">هر خرید</div></div>
+        <div class="cd-metric"><div class="cd-m-label">آخرین بازدید</div><div class="cd-m-val" style="font-size:12px;font-family:var(--font-body);font-weight:600" id="cd-last-visit">۲۷ اردیبهشت ۱۴۰۵</div><div class="cd-m-sub" id="cd-visit-ago">۲ ساعت پیش</div></div>
+        <div class="cd-metric"><div class="cd-m-label">میانگین زمان</div><div class="cd-m-val" id="cd-session">۸ دق ۲۴ ث</div><div class="cd-m-sub">هر بازدید</div></div>
       </div>
     </div>
     <div class="cd-section">
-      <div class="cd-sec-title">Liked Products</div>
+      <div class="cd-sec-title">محصولات نشانده</div>
       <div class="liked-scroll" id="cd-liked"></div>
     </div>
     <div class="cd-section">
-      <div class="cd-sec-title">Activity This Month</div>
+      <div class="cd-sec-title">فعالیت این ماه</div>
       <div class="cd-metrics cd-metrics-3" style="grid-template-columns:repeat(3,1fr)">
-        <div class="cd-metric"><div class="cd-m-label">Visits</div><div class="cd-m-val" id="cd-visits">14</div><div class="cd-m-sub">this month</div></div>
-        <div class="cd-metric"><div class="cd-m-label">Total Time</div><div class="cd-m-val" id="cd-total-time">1h 58m</div><div class="cd-m-sub">on app</div></div>
-        <div class="cd-metric"><div class="cd-m-label">Saves</div><div class="cd-m-val" id="cd-saves">23</div><div class="cd-m-sub">items favorited</div></div>
+        <div class="cd-metric"><div class="cd-m-label">بازدیدها</div><div class="cd-m-val" id="cd-visits">۱۴</div><div class="cd-m-sub">این ماه</div></div>
+        <div class="cd-metric"><div class="cd-m-label">مجموع زمان</div><div class="cd-m-val" id="cd-total-time">۱ ساعت ۵۸ دق</div><div class="cd-m-sub">در اپ</div></div>
+        <div class="cd-metric"><div class="cd-m-label">نشانده‌ها</div><div class="cd-m-val" id="cd-saves">۲۳</div><div class="cd-m-sub">قطعه نشانده</div></div>
       </div>
       <div style="margin-top:12px">
-        <div style="font-size:9.5px;color:var(--muted);margin-bottom:6px;letter-spacing:0.12em;text-transform:uppercase">Daily activity — past 7 days</div>
+        <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px;letter-spacing:0.06em">فعالیت روزانه — ۷ روز گذشته</div>
         <div class="act-bar" id="cd-activity-bar"></div>
-        <div class="act-bar-days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div class="act-bar-days"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
       </div>
     </div>
     <div class="cd-section">
-      <div class="cd-sec-title">Recent Activity</div>
+      <div class="cd-sec-title">فعالیت‌های اخیر</div>
       <div id="cd-activity-list"></div>
     </div>
   </div>
   <div class="cd-foot">
-    <button class="btn btn-primary btn-sm" style="flex:1" onclick="closeCustDrawer();setTimeout(()=>{navigate('invoices');openModal('inv');},80)">+ New Invoice</button>
+    <button class="btn btn-primary btn-sm" style="flex:1" onclick="closeCustDrawer();setTimeout(()=>{navigate('invoices');openModal('inv');},80)">+ فاکتور جدید</button>
   </div>
 </div>
 
 <!-- ══ MODAL: Edit Customer ══ -->
 <div class="modal-overlay" id="modal-edit-cust">
   <div class="modal">
-    <div class="modal-hdr"><div><div class="modal-title">Edit Customer</div><div class="modal-sub">Update customer details</div></div><button class="modal-x" onclick="closeModal('edit-cust')">×</button></div>
+    <div class="modal-hdr"><div><div class="modal-title">ویرایش مشتری</div><div class="modal-sub">بروزرسانی اطلاعات مشتری</div></div><button class="modal-x" onclick="closeModal('edit-cust')">×</button></div>
     <div class="modal-body">
-      <div class="frow"><div class="fgrp"><label class="flabel">First Name</label><input class="finput" id="ec-first" type="text"></div><div class="fgrp"><label class="flabel">Last Name</label><input class="finput" id="ec-last" type="text"></div></div>
-      <div class="fgrp"><label class="flabel">Phone Number</label><input class="finput" id="ec-phone" type="tel" style="font-family:var(--font-mono)"></div>
-      <div class="fgrp"><label class="flabel">Notes</label><textarea class="finput ftarea" id="ec-notes" placeholder="Any notes about this customer…"></textarea></div>
+      <div class="frow"><div class="fgrp"><label class="flabel">نام</label><input class="finput" id="ec-first" type="text"></div><div class="fgrp"><label class="flabel">نام خانوادگی</label><input class="finput" id="ec-last" type="text"></div></div>
+      <div class="fgrp"><label class="flabel">شماره تماس</label><input class="finput" id="ec-phone" type="tel" style="font-family:var(--font-mono)"></div>
+      <div class="fgrp"><label class="flabel">یادداشت</label><textarea class="finput ftarea" id="ec-notes" placeholder="یادداشت‌هایی درباره‌ی این مشتری…"></textarea></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('edit-cust')">Cancel</button><button class="btn btn-primary" onclick="closeModal('edit-cust')">Save Changes</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('edit-cust')">انصراف</button><button class="btn btn-primary" onclick="closeModal('edit-cust')">ذخیره‌ی تغییرات</button></div>
   </div>
 </div>
 
 <script>
   /* ── Navigation ── */
   const sectionMeta = {
-    dashboard: { title:'Dashboard',  btn:'+ Add' },
-    customers:  { title:'Customers', btn:'+ Add Customer' },
-    products:   { title:'Products',  btn:'+ Add Product' },
-    gallery:    { title:'Showroom Editor',   btn:null },
-    invoices:   { title:'Invoices',  btn:'+ New Invoice' },
-    priceboard: { title:'Price Board', btn:'+ Add Price Entry' },
+    dashboard:  { title:'داشبورد',       btn:'+ افزودن' },
+    customers:  { title:'مشتریان',       btn:'+ افزودن مشتری' },
+    products:   { title:'محصولات',       btn:'+ افزودن محصول' },
+    gallery:    { title:'ویرایش ویترین', btn:null },
+    invoices:   { title:'فاکتورها',      btn:'+ فاکتور جدید' },
+    priceboard: { title:'قیمت روز',      btn:'+ افزودن قیمت' },
   };
   const primaryFns = {
     customers: () => openModal('cust'),
     products:  () => openModal('prod'),
     invoices:  () => openModal('inv'),
-    priceboard: () => alert('Add new price entry'),
+    priceboard: () => alert('افزودن قیمت جدید'),
   };
   let current = 'dashboard';
 
@@ -1142,10 +1145,8 @@
 
   /* ── Gallery Style Switcher ── */
   function switchStyle(style) {
-    // Update style picker buttons
     document.querySelectorAll('.style-opt').forEach(s => s.classList.remove('active'));
     document.querySelector('[data-style="' + style + '"]').classList.add('active');
-    // Show/hide layouts
     document.querySelectorAll('.preview-layout').forEach(l => l.style.display = 'none');
     const layout = document.getElementById('layout-' + style);
     if (layout) layout.style.display = 'flex';
@@ -1153,10 +1154,8 @@
 
   /* ── Theme Color Picker ── */
   function updateThemeColor(type, value) {
-    // Sync swatch and hex input
     document.getElementById('color-' + type).value = value;
     document.getElementById('hex-' + type).value = value;
-    // Apply to preview elements with accent colors
     if (type === 'primary') {
       document.documentElement.style.setProperty('--preview-primary', value);
       document.querySelectorAll('.preview-layout [style*="d4a574"]').forEach(el => {
@@ -1167,7 +1166,7 @@
 
   /* ── Gallery post steps ── */
   let postStep = 1;
-  const postSubs = ['Select a photo to get started', 'Add details for this post', 'Review and publish'];
+  const postSubs = ['برای شروع یک عکس انتخاب کنید', 'جزییات این پست را وارد کنید', 'بررسی و انتشار'];
   function postGo(n) {
     if (n < 1 || n > 3) return;
     postStep = n;
@@ -1177,7 +1176,7 @@
     }
     document.getElementById('post-sub').textContent = postSubs[n - 1];
     document.getElementById('post-back').style.visibility = n > 1 ? 'visible' : 'hidden';
-    document.getElementById('post-next').textContent = n === 3 ? 'Publish ✓' : 'Next →';
+    document.getElementById('post-next').textContent = n === 3 ? 'انتشار ✓' : 'بعد ←';
     document.getElementById('post-foot').style.display = n === 3 ? 'none' : 'flex';
   }
   function resetPost() { postStep = 1; postGo(1); document.getElementById('post-prev').style.display = 'none'; document.getElementById('post-up').style.display = 'block'; }
@@ -1194,7 +1193,7 @@
 
   /* ── Invoice steps ── */
   let invStep = 1;
-  const invSubs = ["Enter the customer's phone number", 'Upload customer ID photo', 'Upload signed receipt'];
+  const invSubs = ['شماره تماس مشتری را وارد کنید', 'عکس کارت ملی مشتری را بارگذاری کنید', 'رسید امضاشده را بارگذاری کنید'];
   function invGo(n) {
     if (n < 1) return;
     if (n > 3) { closeModal('inv'); resetInv(); return; }
@@ -1205,7 +1204,7 @@
     }
     document.getElementById('inv-sub').textContent = invSubs[n - 1];
     document.getElementById('inv-back').style.visibility = n > 1 ? 'visible' : 'hidden';
-    document.getElementById('inv-next').textContent = n === 3 ? 'Create Invoice ✓' : 'Next →';
+    document.getElementById('inv-next').textContent = n === 3 ? 'ثبت فاکتور ✓' : 'بعد ←';
   }
   function resetInv() { invStep = 1; invGo(1); }
 
@@ -1217,67 +1216,67 @@
   /* ── Customer Drawer ── */
   const custProfiles = {
     'Sahar Moradi': {
-      firstName:'Sahar', lastName:'Moradi', phone:'+98 912 345 6789', notes:'VIP client, prefers gold pieces',
-      joined:'Jan 2024', total:'₺84,200', totalSub:'across 7 orders', avg:'₺12,028',
-      lastVisit:'May 17, 2026', visitAgo:'2 hours ago', session:'8m 24s',
-      visits:'14', totalTime:'1h 58m', saves:'23',
+      firstName:'سحر', lastName:'مرادی', phone:'۰۹۱۲ ۳۴۵ ۶۷۸۹', notes:'مشتری ویژه، علاقه‌مند به طلا',
+      joined:'دی ۱۴۰۲', total:'۸۴٬۲۰۰٬۰۰۰ ﺗ', totalSub:'در ۷ سفارش', avg:'۱۲٬۰۲۸٬۰۰۰ ﺗ',
+      lastVisit:'۲۷ اردیبهشت ۱۴۰۵', visitAgo:'۲ ساعت پیش', session:'۸ دق ۲۴ ث',
+      visits:'۱۴', totalTime:'۱ ساعت ۵۸ دق', saves:'۲۳',
       activityDays:[{h:8},{h:12},{h:6},{h:18},{h:9},{h:24},{h:14}],
-      liked:[{e:'💍',n:'Diamond Ring'},{e:'📿',n:'Pearl Necklace'},{e:'✨',n:'Ruby Earrings'},{e:'🔗',n:'Gold Chain'}],
+      liked:[{e:'💍',n:'انگشتر الماس'},{e:'📿',n:'گردنبند مروارید'},{e:'✨',n:'گوشواره‌ی یاقوت'},{e:'🔗',n:'زنجیر طلا'}],
       activity:[
-        {text:'Viewed Gallery',sub:'Pearl Drop Necklace',time:'2h ago',color:'var(--accent)'},
-        {text:'Saved to Favorites',sub:'Diamond Solitaire Ring',time:'3h ago',color:'var(--warning)'},
-        {text:'Purchased',sub:'Gold Chain Bracelet · ₺18,200',time:'May 15',color:'var(--success)'},
-        {text:'Opened Showroom',sub:'Featured collection · 12 min',time:'May 14',color:'var(--accent)'},
+        {text:'بازدید از گالری',sub:'گردنبند آویز مروارید',time:'۲ س پیش',color:'var(--accent)'},
+        {text:'افزودن به نشانده',sub:'انگشتر سولیتر الماس',time:'۳ س پیش',color:'var(--warning)'},
+        {text:'خرید',sub:'دستبند طلای زنجیری · ۱۸٬۲۰۰٬۰۰۰ ﺗ',time:'۲۵ ارد',color:'var(--success)'},
+        {text:'بازکردن ویترین',sub:'مجموعه‌ی ویژه · ۱۲ دقیقه',time:'۲۴ ارد',color:'var(--accent)'},
       ]
     },
     'Reza Ahmadi': {
-      firstName:'Reza', lastName:'Ahmadi', phone:'+98 935 678 1234', notes:'Interested in men\'s rings',
-      joined:'Mar 2024', total:'₺42,500', totalSub:'across 3 orders', avg:'₺14,166',
-      lastVisit:'May 16, 2026', visitAgo:'1 day ago', session:'5m 12s',
-      visits:'8', totalTime:'41m', saves:'9',
+      firstName:'رضا', lastName:'احمدی', phone:'۰۹۳۵ ۶۷۸ ۱۲۳۴', notes:'علاقه‌مند به انگشتر مردانه',
+      joined:'اسفند ۱۴۰۲', total:'۴۲٬۵۰۰٬۰۰۰ ﺗ', totalSub:'در ۳ سفارش', avg:'۱۴٬۱۶۶٬۰۰۰ ﺗ',
+      lastVisit:'۲۶ اردیبهشت ۱۴۰۵', visitAgo:'۱ روز پیش', session:'۵ دق ۱۲ ث',
+      visits:'۸', totalTime:'۴۱ دق', saves:'۹',
       activityDays:[{h:4},{h:0},{h:7},{h:3},{h:11},{h:5},{h:2}],
-      liked:[{e:'🔗',n:'Gold Chain'},{e:'💍',n:'Signet Ring'},{e:'⌚',n:'Watch Band'}],
+      liked:[{e:'🔗',n:'زنجیر طلا'},{e:'💍',n:'انگشتر سیگنت'},{e:'⌚',n:'بند ساعت'}],
       activity:[
-        {text:'Viewed Gallery',sub:'Gold Chain Bracelet',time:'1d ago',color:'var(--accent)'},
-        {text:'Purchased',sub:'Signet Ring · ₺15,400',time:'May 12',color:'var(--success)'},
+        {text:'بازدید از گالری',sub:'دستبند طلای زنجیری',time:'۱ ر پیش',color:'var(--accent)'},
+        {text:'خرید',sub:'انگشتر سیگنت · ۱۵٬۴۰۰٬۰۰۰ ﺗ',time:'۲۲ ارد',color:'var(--success)'},
       ]
     },
     'Mina Tehrani': {
-      firstName:'Mina', lastName:'Tehrani', phone:'+98 901 234 5678', notes:'Anniversary shopping, husband\'s gift',
-      joined:'Oct 2023', total:'₺198,400', totalSub:'across 12 orders', avg:'₺16,533',
-      lastVisit:'May 15, 2026', visitAgo:'2 days ago', session:'14m 8s',
-      visits:'22', totalTime:'5h 12m', saves:'47',
+      firstName:'مینا', lastName:'تهرانی', phone:'۰۹۰۱ ۲۳۴ ۵۶۷۸', notes:'خرید سالگرد، هدیه‌ی همسر',
+      joined:'مهر ۱۴۰۲', total:'۱۹۸٬۴۰۰٬۰۰۰ ﺗ', totalSub:'در ۱۲ سفارش', avg:'۱۶٬۵۳۳٬۰۰۰ ﺗ',
+      lastVisit:'۲۵ اردیبهشت ۱۴۰۵', visitAgo:'۲ روز پیش', session:'۱۴ دق ۸ ث',
+      visits:'۲۲', totalTime:'۵ ساعت ۱۲ دق', saves:'۴۷',
       activityDays:[{h:18},{h:22},{h:14},{h:28},{h:16},{h:32},{h:20}],
-      liked:[{e:'💎',n:'Diamond Set'},{e:'📿',n:'Pearl Drop'},{e:'✨',n:'Ruby Studs'},{e:'💍',n:'Wedding Band'},{e:'🔗',n:'Bracelet'}],
+      liked:[{e:'💎',n:'سرویس الماس'},{e:'📿',n:'آویز مروارید'},{e:'✨',n:'گوشواره‌ی یاقوت'},{e:'💍',n:'حلقه‌ی ازدواج'},{e:'🔗',n:'دستبند'}],
       activity:[
-        {text:'Saved to Favorites',sub:'Diamond Solitaire Ring',time:'2d ago',color:'var(--warning)'},
-        {text:'Purchased',sub:'Pearl Drop Necklace · ₺8,900',time:'May 10',color:'var(--success)'},
-        {text:'Viewed Gallery',sub:'Wedding collection · 18 min',time:'May 8',color:'var(--accent)'},
+        {text:'افزودن به نشانده',sub:'انگشتر سولیتر الماس',time:'۲ ر پیش',color:'var(--warning)'},
+        {text:'خرید',sub:'گردنبند آویز مروارید · ۸٬۹۰۰٬۰۰۰ ﺗ',time:'۲۰ ارد',color:'var(--success)'},
+        {text:'بازدید از گالری',sub:'مجموعه‌ی عروسی · ۱۸ دقیقه',time:'۱۸ ارد',color:'var(--accent)'},
       ]
     },
     'Ali Karimi': {
-      firstName:'Ali', lastName:'Karimi', phone:'+98 913 456 7890', notes:'First-time buyer',
-      joined:'May 2026', total:'₺28,700', totalSub:'across 2 orders', avg:'₺14,350',
-      lastVisit:'May 14, 2026', visitAgo:'3 days ago', session:'3m 45s',
-      visits:'4', totalTime:'15m', saves:'5',
+      firstName:'علی', lastName:'کریمی', phone:'۰۹۱۳ ۴۵۶ ۷۸۹۰', notes:'خریدار اولین‌بار',
+      joined:'اردیبهشت ۱۴۰۵', total:'۲۸٬۷۰۰٬۰۰۰ ﺗ', totalSub:'در ۲ سفارش', avg:'۱۴٬۳۵۰٬۰۰۰ ﺗ',
+      lastVisit:'۲۴ اردیبهشت ۱۴۰۵', visitAgo:'۳ روز پیش', session:'۳ دق ۴۵ ث',
+      visits:'۴', totalTime:'۱۵ دق', saves:'۵',
       activityDays:[{h:2},{h:0},{h:4},{h:6},{h:0},{h:3},{h:1}],
-      liked:[{e:'💍',n:'Diamond Ring'},{e:'📿',n:'Necklace'}],
+      liked:[{e:'💍',n:'انگشتر الماس'},{e:'📿',n:'گردنبند'}],
       activity:[
-        {text:'Purchased',sub:'Ruby Stud Earrings · ₺12,700',time:'May 14',color:'var(--success)'},
-        {text:'Viewed Gallery',sub:'Earrings category',time:'May 13',color:'var(--accent)'},
+        {text:'خرید',sub:'گوشواره‌ی یاقوت میخی · ۱۲٬۷۰۰٬۰۰۰ ﺗ',time:'۲۴ ارد',color:'var(--success)'},
+        {text:'بازدید از گالری',sub:'دسته‌ی گوشواره',time:'۲۳ ارد',color:'var(--accent)'},
       ]
     },
     'Nasrin Hosseini': {
-      firstName:'Nasrin', lastName:'Hosseini', phone:'+98 921 789 0123', notes:'',
-      joined:'Nov 2024', total:'₺67,300', totalSub:'across 5 orders', avg:'₺13,460',
-      lastVisit:'May 12, 2026', visitAgo:'5 days ago', session:'6m 52s',
-      visits:'11', totalTime:'1h 15m', saves:'18',
+      firstName:'نسرین', lastName:'حسینی', phone:'۰۹۲۱ ۷۸۹ ۰۱۲۳', notes:'',
+      joined:'آبان ۱۴۰۳', total:'۶۷٬۳۰۰٬۰۰۰ ﺗ', totalSub:'در ۵ سفارش', avg:'۱۳٬۴۶۰٬۰۰۰ ﺗ',
+      lastVisit:'۲۲ اردیبهشت ۱۴۰۵', visitAgo:'۵ روز پیش', session:'۶ دق ۵۲ ث',
+      visits:'۱۱', totalTime:'۱ ساعت ۱۵ دق', saves:'۱۸',
       activityDays:[{h:6},{h:9},{h:4},{h:12},{h:7},{h:15},{h:8}],
-      liked:[{e:'💎',n:'Diamond Set'},{e:'✨',n:'Ruby Studs'},{e:'📿',n:'Pearl Drop'}],
+      liked:[{e:'💎',n:'سرویس الماس'},{e:'✨',n:'گوشواره‌ی یاقوت'},{e:'📿',n:'آویز مروارید'}],
       activity:[
-        {text:'Saved to Favorites',sub:'Ruby Necklace Collection',time:'5d ago',color:'var(--warning)'},
-        {text:'Purchased',sub:'Gold Chain Bracelet · ₺18,200',time:'May 6',color:'var(--success)'},
-        {text:'Viewed Gallery',sub:'New arrivals · 9 min',time:'May 5',color:'var(--accent)'},
+        {text:'افزودن به نشانده',sub:'مجموعه‌ی گردنبند یاقوت',time:'۵ ر پیش',color:'var(--warning)'},
+        {text:'خرید',sub:'دستبند طلای زنجیری · ۱۸٬۲۰۰٬۰۰۰ ﺗ',time:'۱۶ ارد',color:'var(--success)'},
+        {text:'بازدید از گالری',sub:'تازه‌ها · ۹ دقیقه',time:'۱۵ ارد',color:'var(--accent)'},
       ]
     }
   };
@@ -1331,16 +1330,16 @@
   }
 
   function blockCustomer() {
-    if (confirm('Block ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '? They will no longer be able to log in.')) {
+    if (confirm('مسدودسازی ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '؟ پس از این، امکان ورود به حساب نخواهد داشت.')) {
       closeCustDrawer();
-      alert('Customer blocked.');
+      alert('مشتری مسدود شد.');
     }
   }
 
   function deleteCustomer() {
-    if (confirm('Delete ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '? This action cannot be undone.')) {
+    if (confirm('حذف ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '؟ این عمل قابل بازگشت نیست.')) {
       closeCustDrawer();
-      alert('Customer deleted.');
+      alert('مشتری حذف شد.');
     }
   }
 
@@ -1352,7 +1351,7 @@
       document.querySelectorAll('.layout-opt').forEach(o => o.classList.remove('active'));
       opt.classList.add('active');
       const layoutName = opt.querySelector('.layout-name').textContent;
-      document.querySelector('.card-title').textContent = layoutName + ' Layout — Upload Images';
+      document.querySelector('.card-title').textContent = layoutName + ' — بارگذاری تصاویر';
     });
   });
 </script>
