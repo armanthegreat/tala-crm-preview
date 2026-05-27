@@ -1,0 +1,1360 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tala Admin — Store CRM</title>
+  <style>
+    :root {
+      --bg:      oklch(97.5% 0.008 85);
+      --surface: oklch(99%   0.004 85);
+      --fg:      oklch(18%   0.022 60);
+      --muted:   oklch(56%   0.014 70);
+      --border:  oklch(91%   0.006 80);
+      --accent:  oklch(68%   0.13  78);
+      --accent-dim: oklch(92% 0.04 78);
+      --dark:    oklch(16%   0.018 55);
+      --success: oklch(62%   0.14  142);
+      --warning: oklch(70%   0.14  72);
+      --danger:  oklch(58%   0.18  25);
+      --font-display: 'Cormorant Garamond','Garamond',Georgia,serif;
+      --font-body: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+      --font-mono: ui-monospace,'JetBrains Mono',Menlo,monospace;
+      --sidebar-w: 232px;
+      --r: 12px;
+      --r-sm: 8px;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html,body { height:100%; font-family:var(--font-body); font-size:14px; line-height:1.5; color:var(--fg); background:var(--bg); -webkit-font-smoothing:antialiased; }
+
+    /* ── Layout ── */
+    .app { display:flex; height:100vh; overflow:hidden; }
+
+    /* ── Sidebar ── */
+    .sidebar { width:var(--sidebar-w); flex-shrink:0; background:var(--dark); display:flex; flex-direction:column; }
+    .sb-logo { padding:26px 22px 22px; border-bottom:1px solid oklch(26% 0.015 55); }
+    .sb-logo .wordmark { font-family:var(--font-display); font-size:24px; font-weight:300; letter-spacing:0.22em; color:oklch(92% 0.008 80); }
+    .sb-logo .sub { font-size:9.5px; letter-spacing:0.2em; text-transform:uppercase; color:oklch(44% 0.01 60); margin-top:3px; }
+    .nav { flex:1; padding:14px 0; overflow-y:auto; }
+    .nav-label { padding:18px 22px 7px; font-size:9.5px; letter-spacing:0.18em; text-transform:uppercase; color:oklch(38% 0.01 60); }
+    .nav-item { display:flex; align-items:center; gap:11px; padding:10px 22px; cursor:pointer; color:oklch(60% 0.01 65); font-size:13px; font-weight:450; border-left:2px solid transparent; transition:all .15s; user-select:none; }
+    .nav-item:hover { color:oklch(86% 0.008 80); background:oklch(21% 0.014 55); }
+    .nav-item.active { color:var(--accent); border-left-color:var(--accent); background:oklch(19% 0.012 58); }
+    .nav-item .ni { width:16px; font-size:15px; text-align:center; flex-shrink:0; }
+    .sb-foot { padding:18px 22px; border-top:1px solid oklch(24% 0.015 55); }
+    .sb-user { display:flex; align-items:center; gap:10px; }
+    .sb-av { width:30px; height:30px; border-radius:50%; background:oklch(26% 0.04 78); display:grid; place-items:center; font-size:12px; color:var(--accent); font-weight:600; flex-shrink:0; }
+    .sb-name { font-size:12px; color:oklch(78% 0.008 75); font-weight:500; }
+    .sb-role { font-size:11px; color:oklch(44% 0.01 60); }
+
+    /* ── Main ── */
+    .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .topbar { height:58px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 26px; gap:14px; flex-shrink:0; }
+    .tb-title { font-family:var(--font-display); font-size:19px; font-weight:500; letter-spacing:0.02em; flex:1; }
+    .tb-actions { display:flex; gap:9px; align-items:center; }
+    .content { flex:1; overflow-y:auto; padding:26px; }
+
+    /* ── Buttons ── */
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 15px; border-radius:var(--r-sm); font-size:13px; font-weight:500; cursor:pointer; border:1px solid transparent; transition:all .15s; white-space:nowrap; font-family:var(--font-body); }
+    .btn-primary { background:var(--fg); color:var(--surface); }
+    .btn-primary:hover { background:oklch(26% 0.022 60); }
+    .btn-ghost { background:transparent; color:var(--fg); border-color:var(--border); }
+    .btn-ghost:hover { background:var(--bg); }
+    .btn-gold { background:var(--accent); color:#fff; }
+    .btn-gold:hover { background:oklch(62% 0.13 78); }
+    .btn-sm { padding:5px 11px; font-size:12px; }
+    .btn-danger { background:oklch(96% 0.04 25); color:var(--danger); border-color:oklch(90% 0.06 25); }
+
+    /* ── Search ── */
+    .search-wrap { position:relative; display:flex; align-items:center; }
+    .search-wrap input { width:260px; padding:8px 12px 8px 34px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; font-family:var(--font-body); background:var(--surface); color:var(--fg); outline:none; transition:border-color .15s; }
+    .search-wrap input:focus { border-color:var(--accent); }
+    .search-wrap .si { position:absolute; left:10px; color:var(--muted); font-size:14px; pointer-events:none; }
+
+    /* ── Sections ── */
+    .section { display:none; }
+    .section.active { display:block; }
+
+    /* ── Cards ── */
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:20px; }
+    .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .card-title { font-family:var(--font-display); font-size:15px; font-weight:600; }
+
+    /* ── Stats ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:18px 20px; }
+    .stat-label { font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .stat-value { font-family:var(--font-mono); font-size:25px; font-weight:700; line-height:1; margin-bottom:6px; font-variant-numeric:tabular-nums; }
+    .stat-delta { font-size:11px; display:flex; align-items:center; gap:3px; }
+    .stat-delta.up { color:var(--success); }
+    .stat-delta.down { color:var(--danger); }
+
+    /* ── Dashboard grid ── */
+    .dash-grid { display:grid; grid-template-columns:1fr 320px; gap:18px; }
+
+    /* ── Table ── */
+    .table { width:100%; border-collapse:collapse; }
+    .table th { text-align:left; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); padding:0 12px 10px 0; border-bottom:1px solid var(--border); font-weight:500; }
+    .table td { padding:11px 12px 11px 0; font-size:13px; border-bottom:1px solid oklch(94% 0.004 85); vertical-align:middle; }
+    .table tbody tr:last-child td { border-bottom:none; }
+    .table tbody tr:hover td { background:oklch(97% 0.005 85); }
+
+    /* ── Badges ── */
+    .badge { display:inline-flex; align-items:center; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:500; }
+    .badge-ok  { background:oklch(94% 0.04 142); color:oklch(34% 0.14 142); }
+    .badge-warn{ background:oklch(96% 0.06 75);  color:oklch(42% 0.14 72); }
+    .badge-dim { background:oklch(92% 0.004 80); color:var(--muted); }
+    .badge-err { background:oklch(96% 0.05 25);  color:oklch(42% 0.18 25); }
+
+    /* ── Avatar ── */
+    .av { width:32px; height:32px; border-radius:50%; background:var(--accent-dim); display:inline-grid; place-items:center; font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0; }
+
+    /* ── Activity ── */
+    .act-list { display:flex; flex-direction:column; }
+    .act-item { display:flex; gap:11px; padding:11px 0; border-bottom:1px solid oklch(94% 0.004 85); }
+    .act-item:last-child { border-bottom:none; }
+    .act-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); margin-top:5px; flex-shrink:0; }
+    .act-text { font-size:12px; line-height:1.5; }
+    .act-time { font-size:11px; color:var(--muted); margin-top:2px; }
+
+    /* ── Page header ── */
+    .page-hdr { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:18px; gap:12px; flex-wrap:wrap; }
+    .page-title { font-family:var(--font-display); font-size:21px; font-weight:500; }
+    .page-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+
+    /* ── Pills ── */
+    .pills { display:flex; gap:7px; flex-wrap:wrap; }
+    .pill { padding:5px 13px; border-radius:999px; font-size:12px; font-weight:500; border:1px solid var(--border); background:var(--surface); cursor:pointer; transition:all .15s; color:var(--muted); }
+    .pill.active { background:var(--fg); color:var(--surface); border-color:var(--fg); }
+    .pill:hover:not(.active) { border-color:var(--fg); color:var(--fg); }
+
+    /* ── Customer grid ── */
+    .cust-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+    .cust-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:18px; cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+    .cust-card:hover { border-color:oklch(80% 0.01 78); box-shadow:0 2px 10px oklch(85% 0.008 80/.4); }
+    .cust-hdr { display:flex; align-items:center; gap:11px; margin-bottom:13px; }
+    .cust-name { font-size:13px; font-weight:600; }
+    .cust-phone { font-size:11px; color:var(--muted); font-family:var(--font-mono); margin-top:1px; }
+    .cust-meta { display:flex; gap:16px; }
+    .cm-label { font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+    .cm-val { font-size:13px; font-weight:700; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+    .cust-add { background:var(--bg); border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; min-height:120px; }
+    .cust-add:hover { border-color:var(--accent); }
+    .add-placeholder { text-align:center; color:var(--muted); }
+    .add-placeholder .plus { font-size:26px; margin-bottom:7px; }
+    .add-placeholder .lbl { font-size:12px; font-weight:500; }
+
+    /* ── Product grid ── */
+    .prod-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+    .prod-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; cursor:pointer; transition:border-color .15s; }
+    .prod-card:hover { border-color:oklch(80% 0.01 78); }
+    .prod-thumb { width:100%; aspect-ratio:1; background:oklch(95% 0.006 85); display:flex; align-items:center; justify-content:center; font-size:40px; overflow:hidden; }
+    .prod-thumb img { width:100%; height:100%; object-fit:cover; }
+    .prod-body { padding:13px; }
+    .prod-name { font-size:13px; font-weight:600; margin-bottom:3px; }
+    .prod-cat { font-size:11px; color:var(--muted); margin-bottom:8px; }
+    .prod-foot { display:flex; justify-content:space-between; align-items:center; }
+    .prod-price { font-size:14px; font-weight:700; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+
+    /* ── Gallery Live Preview Editor ── */
+    .gal-editor { display:grid; grid-template-columns:1fr 420px; gap:24px; }
+    .gal-controls { display:flex; flex-direction:column; gap:18px; }
+
+    .style-picker { display:flex; gap:12px; }
+    .style-opt { flex:1; padding:12px; border:2px solid var(--border); border-radius:var(--r); cursor:pointer; transition:all .15s; text-align:center; background:var(--surface); }
+    .style-opt:hover { border-color:oklch(80% 0.01 78); }
+    .style-opt.active { border-color:var(--accent); background:var(--accent-dim); }
+    .style-thumb { width:100%; aspect-ratio:9/16; background:oklch(16% 0.018 55); border-radius:6px; margin-bottom:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:10px; color:oklch(70% 0.01 60); }
+    .style-name { font-size:11px; font-weight:600; }
+    .style-desc { font-size:10px; color:var(--muted); margin-top:2px; }
+
+    .color-pickers { display:flex; gap:14px; }
+    .color-pick { flex:1; }
+    .color-label { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:6px; }
+    .color-row { display:flex; align-items:center; gap:8px; }
+    .color-swatch { width:36px; height:36px; border-radius:8px; border:2px solid var(--border); cursor:pointer; transition:border-color .15s; }
+    .color-swatch:hover { border-color:var(--fg); }
+    .color-hex { font-family:var(--font-mono); font-size:12px; color:var(--fg); width:70px; text-align:center; padding:6px 8px; border:1px solid var(--border); border-radius:6px; background:var(--surface); }
+
+    .phone-preview { position:relative; }
+    .phone-frame { width:390px; height:844px; background:oklch(16% 0.018 55); border-radius:44px; padding:14px; box-shadow:0 24px 60px oklch(10% 0.02 60/.3); position:relative; }
+    .phone-notch { position:absolute; top:14px; left:50%; transform:translateX(-50%); width:126px; height:34px; background:#000; border-radius:20px; z-index:10; }
+    .phone-screen { width:100%; height:100%; background:var(--preview-bg, #1c1b1a); border-radius:32px; overflow:hidden; position:relative; }
+
+    .preview-slot { position:relative; cursor:pointer; transition:opacity .15s; overflow:hidden; }
+    .preview-slot:hover .slot-actions { opacity:1; }
+    .slot-actions { position:absolute; inset:0; background:oklch(10% 0.02 60/.65); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; opacity:0; transition:opacity .15s; backdrop-filter:blur(3px); }
+    .slot-act { padding:6px 14px; font-size:11px; font-weight:500; border:none; border-radius:6px; cursor:pointer; background:rgba(255,255,255,.95); color:#1c1b1a; transition:all .15s; }
+    .slot-act:hover { background:#fff; }
+    .slot-act.del { background:oklch(92% 0.08 25); color:var(--danger); }
+    .slot-act.del:hover { background:oklch(88% 0.1 25); }
+
+    .edit-text { cursor:text; border:1px dashed transparent; border-radius:4px; padding:2px 4px; margin:-2px -4px; transition:all .15s; }
+    .edit-text:hover { border-color:var(--accent); background:oklch(100% 0 0/.12); }
+    .edit-text:focus { outline:none; border-color:var(--accent); background:oklch(100% 0 0/.18); }
+
+    .preview-nav { position:absolute; bottom:0; left:0; right:0; height:70px; background:oklch(12% 0.015 55); display:flex; justify-content:space-around; align-items:center; padding:0 20px 10px; }
+    .nav-icon { width:44px; height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:oklch(50% 0.01 60); font-size:18px; }
+    .nav-icon span { font-size:9px; letter-spacing:0.05em; }
+    .nav-icon.active { color:var(--preview-primary, #d4a574); }
+
+    .tips-card { background:oklch(96% 0.006 85); border-radius:var(--r-sm); padding:14px 18px; }
+    .tip-title { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:8px; }
+    .tip-list { margin:0; padding-left:16px; font-size:12px; color:var(--muted); line-height:1.7; }
+
+    /* ── Invoice list ── */
+    .inv-row { display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+    .inv-row:last-child { border-bottom:none; }
+    .inv-row:hover { background:oklch(97.5% 0.005 85); margin:0 -20px; padding:13px 20px; border-radius:var(--r-sm); }
+    .inv-id { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--accent); min-width:44px; }
+    .inv-cust { flex:1; }
+    .inv-cust .n { font-size:13px; font-weight:500; }
+    .inv-cust .p { font-size:11px; color:var(--muted); font-family:var(--font-mono); }
+    .inv-amt { font-family:var(--font-mono); font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; min-width:80px; text-align:right; }
+    .inv-date { font-size:11px; color:var(--muted); min-width:56px; text-align:right; }
+
+    /* ── Modal ── */
+    .modal-overlay { position:fixed; inset:0; background:oklch(10% 0.02 60/.52); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(5px); }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--surface); border-radius:16px; width:540px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px oklch(10% 0.02 60/.28); }
+    .modal-hdr { padding:24px 24px 0; display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:18px; }
+    .modal-title { font-family:var(--font-display); font-size:20px; font-weight:600; }
+    .modal-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+    .modal-x { background:none; border:none; cursor:pointer; color:var(--muted); font-size:22px; padding:0; line-height:1; }
+    .modal-x:hover { color:var(--fg); }
+    .modal-body { padding:0 24px 20px; }
+    .modal-foot { padding:14px 24px; border-top:1px solid var(--border); display:flex; gap:9px; justify-content:flex-end; }
+
+    /* ── Forms ── */
+    .fgrp { margin-bottom:14px; }
+    .flabel { display:block; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:5px; }
+    .finput { width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:14px; font-family:var(--font-body); background:var(--surface); color:var(--fg); outline:none; transition:border-color .15s; }
+    .finput:focus { border-color:var(--accent); }
+    .fselect { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B7E73' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:30px; cursor:pointer; }
+    .frow { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .ftarea { resize:vertical; min-height:76px; }
+
+    /* ── Upload ── */
+    .upload { border:2px dashed var(--border); border-radius:var(--r); padding:28px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s; }
+    .upload:hover { border-color:var(--accent); background:oklch(96% 0.014 78); }
+    .upload-ico { font-size:34px; margin-bottom:10px; }
+    .upload-txt { font-size:13px; font-weight:500; margin-bottom:3px; }
+    .upload-hint { font-size:11px; color:var(--muted); }
+
+    /* ── Customer Drawer ── */
+    .cust-drawer { position:fixed; top:0; right:0; height:100vh; width:440px; max-width:95vw; background:var(--surface); border-left:1px solid var(--border); box-shadow:-20px 0 60px oklch(10% 0.02 60/.14); z-index:150; transform:translateX(100%); transition:transform .28s cubic-bezier(.22,1,.36,1); overflow-y:auto; display:flex; flex-direction:column; }
+    .cust-drawer.open { transform:translateX(0); }
+    .cd-backdrop { position:fixed; inset:0; background:oklch(10% 0.02 60/.18); z-index:149; display:none; backdrop-filter:blur(2px); }
+    .cd-backdrop.open { display:block; }
+    .cd-hdr { padding:22px 22px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:13px; flex-shrink:0; }
+    .cd-av { width:48px; height:48px; border-radius:50%; background:var(--accent-dim); display:grid; place-items:center; font-size:18px; font-weight:700; color:var(--accent); flex-shrink:0; }
+    .cd-info { flex:1; min-width:0; }
+    .cd-name { font-family:var(--font-display); font-size:20px; font-weight:600; line-height:1.2; }
+    .cd-phone { font-size:12px; font-family:var(--font-mono); color:var(--muted); margin-top:3px; }
+    .cd-joined { font-size:11px; color:var(--muted); margin-top:4px; }
+    .cd-close { background:none; border:none; cursor:pointer; color:var(--muted); font-size:24px; padding:0; line-height:1; flex-shrink:0; margin-top:-2px; }
+    .cd-close:hover { color:var(--fg); }
+    .cd-actions { display:flex; gap:6px; align-items:center; flex:1; justify-content:flex-end; margin-right:10px; }
+    .cd-act-btn { width:32px; height:32px; border-radius:var(--r-sm); background:transparent; border:1px solid var(--border); cursor:pointer; display:grid; place-items:center; font-size:14px; transition:all .15s; flex-shrink:0; }
+    .cd-act-btn:hover { background:var(--bg); border-color:var(--fg); }
+    .cd-act-btn.edit:hover { color:var(--accent); border-color:var(--accent); }
+    .cd-act-btn.block:hover { color:var(--warning); border-color:var(--warning); }
+    .cd-act-btn.delete:hover { color:var(--danger); border-color:var(--danger); }
+    .cd-body { flex:1; padding:18px 22px; }
+    .cd-section { margin-bottom:22px; }
+    .cd-sec-title { font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:10px; }
+    .cd-metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+    .cd-metrics-3 { grid-template-columns:repeat(3,1fr); }
+    .cd-metric { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; }
+    .cd-m-label { font-size:9.5px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px; }
+    .cd-m-val { font-family:var(--font-mono); font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.2; }
+    .cd-m-sub { font-size:10.5px; color:var(--muted); margin-top:3px; }
+    .liked-scroll { display:flex; gap:9px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .liked-scroll::-webkit-scrollbar { display:none; }
+    .liked-item { flex-shrink:0; width:76px; cursor:pointer; }
+    .liked-thumb { width:76px; height:76px; border-radius:var(--r-sm); background:oklch(95% 0.005 85); display:flex; align-items:center; justify-content:center; font-size:26px; border:1px solid var(--border); transition:border-color .15s; }
+    .liked-item:hover .liked-thumb { border-color:oklch(78% 0.01 78); }
+    .liked-name { font-size:10px; color:var(--muted); margin-top:5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; text-align:center; }
+    .actl-item { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid oklch(94% 0.004 85); align-items:flex-start; }
+    .actl-item:last-child { border-bottom:none; }
+    .actl-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); margin-top:5px; flex-shrink:0; }
+    .actl-body { flex:1; min-width:0; }
+    .actl-main { font-size:12px; font-weight:500; }
+    .actl-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+    .actl-time { font-size:10.5px; color:var(--muted); font-family:var(--font-mono); flex-shrink:0; white-space:nowrap; }
+    .act-bar { display:flex; gap:3px; margin-top:8px; align-items:flex-end; height:36px; }
+    .act-bar-col { flex:1; background:var(--accent-dim); border-radius:3px 3px 0 0; transition:background .15s; min-height:3px; }
+    .act-bar-col.hi { background:var(--accent); }
+    .act-bar-days { display:flex; justify-content:space-between; margin-top:4px; }
+    .act-bar-day { font-size:9.5px; color:var(--muted); flex:1; text-align:center; }
+    .cd-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:9px; flex-shrink:0; }
+    .cd-actions { display:flex; gap:8px; margin-top:16px; padding-top:16px; border-top:1px dashed var(--border); }
+
+    /* ── Steps ── */
+    .steps { display:flex; align-items:center; gap:6px; margin-bottom:26px; }
+    .step { display:flex; align-items:center; gap:7px; flex:1; }
+    .step-num { width:26px; height:26px; border-radius:50%; background:var(--bg); border:1px solid var(--border); display:grid; place-items:center; font-size:11px; font-weight:700; color:var(--muted); flex-shrink:0; transition:all .2s; }
+    .step.active .step-num { background:var(--fg); color:var(--surface); border-color:var(--fg); }
+    .step.done .step-num { background:var(--success); color:#fff; border-color:var(--success); }
+    .step-lbl { font-size:11.5px; color:var(--muted); }
+    .step.active .step-lbl { color:var(--fg); font-weight:500; }
+    .step-line { height:1px; background:var(--border); flex:1; }
+
+    /* ── Step panels ── */
+    .spanel { display:none; }
+    .spanel.active { display:block; }
+
+    /* ── Price Board ── */
+    .price-list { display:flex; flex-direction:column; gap:0; }
+    .price-entry { display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--border); }
+    .price-entry:last-child { border-bottom:none; }
+    .pe-main { flex:1; }
+    .pe-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+    .pe-unit { font-size:11px; color:var(--muted); }
+    .pe-price { font-family:var(--font-mono); font-size:18px; font-weight:700; font-variant-numeric:tabular-nums; min-width:100px; text-align:right; }
+    .pe-trend { font-family:var(--font-mono); font-size:12px; font-weight:600; min-width:60px; text-align:right; }
+    .pe-trend.up { color:var(--success); }
+    .pe-trend.down { color:var(--danger); }
+    .pe-updated { font-size:11px; color:var(--muted); min-width:120px; text-align:right; }
+
+    /* ── Responsive ── */
+    @media(max-width:1100px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .dash-grid { grid-template-columns:1fr; }
+      .prod-grid { grid-template-columns:repeat(3,1fr); }
+      .gal-grid { grid-template-columns:repeat(3,1fr); }
+      .cust-grid { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:800px) {
+      .sidebar { display:none; }
+      .prod-grid { grid-template-columns:repeat(2,1fr); }
+      .gal-grid { grid-template-columns:repeat(2,1fr); }
+      .cust-grid { grid-template-columns:1fr; }
+      .content { padding:16px; }
+      .topbar { padding:0 16px; }
+      .search-wrap input { width:200px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="wordmark">TALA</div>
+      <div class="sub">Store Admin</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" data-sec="dashboard"><span class="ni">◫</span>Dashboard</div>
+      <div class="nav-label">Manage</div>
+      <div class="nav-item" data-sec="customers"><span class="ni">◎</span>Customers</div>
+      <div class="nav-item" data-sec="products"><span class="ni">◈</span>Products</div>
+      <div class="nav-item" data-sec="gallery"><span class="ni">▣</span>Showroom</div>
+      <div class="nav-label">Commerce</div>
+      <div class="nav-item" data-sec="invoices"><span class="ni">◧</span>Invoices</div>
+      <div class="nav-item" data-sec="priceboard"><span class="ni">◎</span>Price Board</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-av">A</div>
+        <div>
+          <div class="sb-name">Admin</div>
+          <div class="sb-role">Store Manager</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-actions">
+        <div class="search-wrap">
+          <span class="si">⌕</span>
+          <input type="text" placeholder="Search…">
+        </div>
+        <button class="btn btn-primary" id="primary-btn" onclick="handlePrimary()">+ Add</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Revenue — Today</div>
+            <div class="stat-value" style="color:var(--accent)">₺24,500</div>
+            <div class="stat-delta up">↑ 12% vs yesterday</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Orders This Week</div>
+            <div class="stat-value">38</div>
+            <div class="stat-delta up">↑ 5 from last week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">New Customers</div>
+            <div class="stat-value">14</div>
+            <div class="stat-delta up">↑ 3 this week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gallery Posts</div>
+            <div class="stat-value">127</div>
+            <div class="stat-delta down">↓ 2 pending review</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Invoices</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('invoices')">View all</button>
+            </div>
+            <table class="table">
+              <thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1048</span></td><td>Sahar Moradi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺8,200</span></td><td><span class="badge badge-ok">Paid</span></td><td style="color:var(--muted);font-size:12px">May 17</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1047</span></td><td>Reza Ahmadi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺15,400</span></td><td><span class="badge badge-warn">Pending</span></td><td style="color:var(--muted);font-size:12px">May 16</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1046</span></td><td>Mina Tehrani</td><td><span style="font-family:var(--font-mono);font-weight:600">₺3,600</span></td><td><span class="badge badge-ok">Paid</span></td><td style="color:var(--muted);font-size:12px">May 15</td></tr>
+                <tr><td><span style="font-family:var(--font-mono);color:var(--accent);font-weight:700">#1045</span></td><td>Ali Karimi</td><td><span style="font-family:var(--font-mono);font-weight:600">₺22,100</span></td><td><span class="badge badge-dim">Draft</span></td><td style="color:var(--muted);font-size:12px">May 14</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Activity</div></div>
+            <div class="act-list">
+              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">New product added: <strong>Diamond Solitaire Ring</strong></div><div class="act-time">2 min ago</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--success)"></div><div><div class="act-text">Invoice <strong>#1048</strong> marked as paid</div><div class="act-time">18 min ago</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text">New customer: <strong>Sahar Moradi</strong></div><div class="act-time">1 hr ago</div></div></div>
+              <div class="act-item"><div class="act-dot"></div><div><div class="act-text">Gallery post: <strong>Ruby Earrings Collection</strong></div><div class="act-time">3 hr ago</div></div></div>
+              <div class="act-item"><div class="act-dot" style="background:var(--warning)"></div><div><div class="act-text">Invoice <strong>#1047</strong> awaiting payment — Reza Ahmadi</div><div class="act-time">5 hr ago</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS -->
+      <div class="section" id="sec-customers">
+        <div class="page-hdr">
+          <div><div class="page-title">Customers</div><div class="page-sub">48 registered customers</div></div>
+          <div class="search-wrap"><span class="si">⌕</span><input type="text" placeholder="Search customers…"></div>
+        </div>
+        <div class="cust-grid">
+          <div class="cust-card" onclick="openCustDrawer('Sahar Moradi')"><div class="cust-hdr"><div class="av">S</div><div><div class="cust-name">Sahar Moradi</div><div class="cust-phone">+98 912 345 6789</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">7</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺84,200</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 17</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Reza Ahmadi')"><div class="cust-hdr"><div class="av">R</div><div><div class="cust-name">Reza Ahmadi</div><div class="cust-phone">+98 935 678 1234</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">3</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺42,500</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 16</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Mina Tehrani')"><div class="cust-hdr"><div class="av">M</div><div><div class="cust-name">Mina Tehrani</div><div class="cust-phone">+98 901 234 5678</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">12</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺198k</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 15</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Ali Karimi')"><div class="cust-hdr"><div class="av">A</div><div><div class="cust-name">Ali Karimi</div><div class="cust-phone">+98 913 456 7890</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">2</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺28,700</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 14</div></div></div></div>
+          <div class="cust-card" onclick="openCustDrawer('Nasrin Hosseini')"><div class="cust-hdr"><div class="av">N</div><div><div class="cust-name">Nasrin Hosseini</div><div class="cust-phone">+98 921 789 0123</div></div></div><div class="cust-meta"><div><div class="cm-label">Purchases</div><div class="cm-val">5</div></div><div><div class="cm-label">Total</div><div class="cm-val">₺67,300</div></div><div><div class="cm-label">Last</div><div class="cm-val" style="font-family:var(--font-body);font-size:12px">May 12</div></div></div></div>
+          <div class="cust-card cust-add" onclick="openModal('cust')"><div class="add-placeholder"><div class="plus">+</div><div class="lbl">Add Customer</div></div></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="section" id="sec-products">
+        <div class="page-hdr">
+          <div><div class="page-title">Products</div><div class="page-sub">36 items in catalog</div></div>
+          <div class="pills" id="prod-pills">
+            <span class="pill active">All</span><span class="pill">Rings</span><span class="pill">Necklaces</span><span class="pill">Bracelets</span><span class="pill">Earrings</span>
+          </div>
+        </div>
+        <div class="prod-grid">
+          <div class="prod-card"><div class="prod-thumb">💍</div><div class="prod-body"><div class="prod-name">Diamond Solitaire Ring</div><div class="prod-cat">Rings · 18K Gold</div><div class="prod-foot"><div class="prod-price">₺24,500</div><span class="badge badge-ok">In Stock</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb">📿</div><div class="prod-body"><div class="prod-name">Pearl Drop Necklace</div><div class="prod-cat">Necklaces · Silver</div><div class="prod-foot"><div class="prod-price">₺8,900</div><span class="badge badge-ok">In Stock</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb" style="font-size:36px">🔗</div><div class="prod-body"><div class="prod-name">Gold Chain Bracelet</div><div class="prod-cat">Bracelets · 24K Gold</div><div class="prod-foot"><div class="prod-price">₺18,200</div><span class="badge badge-warn">Low Stock</span></div></div></div>
+          <div class="prod-card"><div class="prod-thumb">✨</div><div class="prod-body"><div class="prod-name">Ruby Stud Earrings</div><div class="prod-cat">Earrings · 18K Gold</div><div class="prod-foot"><div class="prod-price">₺12,700</div><span class="badge badge-err">Out of Stock</span></div></div></div>
+          <div class="prod-card" style="border-style:dashed;background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:200px;cursor:pointer;" onclick="openModal('prod')">
+            <div class="add-placeholder"><div class="plus">+</div><div class="lbl">Add Product</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GALLERY LAYOUT CONFIGURATOR -->
+      <div class="section" id="sec-gallery">
+        <div class="page-hdr">
+          <div><div class="page-title">Showroom Editor</div><div class="page-sub">Design your storefront landing page — hover to edit images, click text to edit</div></div>
+          <div style="display:flex;gap:9px;">
+            <button class="btn btn-ghost btn-sm">↺ Reset</button>
+            <button class="btn btn-gold">Publish Changes</button>
+          </div>
+        </div>
+
+        <div class="gal-editor">
+          <!-- Left: Controls -->
+          <div class="gal-controls">
+            <!-- Style Picker -->
+            <div class="card">
+              <div class="card-header"><div class="card-title">Layout Style</div></div>
+              <div class="style-picker">
+                <div class="style-opt" data-style="magazine" onclick="switchStyle('magazine')">
+                  <div class="style-thumb" style="background:linear-gradient(to bottom, oklch(96% 0.01 85) 0%, oklch(96% 0.01 85) 15%, oklch(88% 0.03 85) 15%, oklch(88% 0.03 85) 100%);"></div>
+                  <div class="style-name">Magazine</div>
+                  <div class="style-desc">Clean editorial hero</div>
+                </div>
+                <div class="style-opt active" data-style="mosaic" onclick="switchStyle('mosaic')">
+                  <div class="style-thumb" style="background:linear-gradient(135deg, oklch(20% 0.02 55) 0%, oklch(25% 0.02 60) 100%); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr 1fr; gap:2px; padding:4px;">
+                    <div style="background:oklch(30% 0.02 55); grid-row:1/3;"></div>
+                    <div style="background:oklch(35% 0.02 60);"></div>
+                    <div style="background:oklch(28% 0.02 55);"></div>
+                    <div style="background:oklch(32% 0.02 58);"></div>
+                    <div style="background:oklch(30% 0.02 55);"></div>
+                  </div>
+                  <div class="style-name">Mosaic</div>
+                  <div class="style-desc">Grid with text overlay</div>
+                </div>
+                <div class="style-opt" data-style="editorial" onclick="switchStyle('editorial')">
+                  <div class="style-thumb" style="background:oklch(14% 0.015 55); display:flex; flex-direction:column; padding:6px;">
+                    <div style="flex:1; background:linear-gradient(to bottom, oklch(55% 0.12 78), oklch(45% 0.10 75)); border-radius:3px; margin-bottom:4px;"></div>
+                    <div style="height:12px; background:oklch(20% 0.02 55); border-radius:2px;"></div>
+                  </div>
+                  <div class="style-name">Editorial</div>
+                  <div class="style-desc">Dark with collections</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Theme Colors -->
+            <div class="card">
+              <div class="card-header"><div class="card-title">Theme Colors</div></div>
+              <div class="color-pickers">
+                <div class="color-pick">
+                  <div class="color-label">Primary (Accent)</div>
+                  <div class="color-row">
+                    <input type="color" class="color-swatch" id="color-primary" value="#d4a574" onchange="updateThemeColor('primary', this.value)">
+                    <input type="text" class="color-hex" id="hex-primary" value="#d4a574" onchange="updateThemeColor('primary', this.value)">
+                  </div>
+                </div>
+                <div class="color-pick">
+                  <div class="color-label">Secondary</div>
+                  <div class="color-row">
+                    <input type="color" class="color-swatch" id="color-secondary" value="#f5e6d3" onchange="updateThemeColor('secondary', this.value)">
+                    <input type="text" class="color-hex" id="hex-secondary" value="#f5e6d3" onchange="updateThemeColor('secondary', this.value)">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="tips-card">
+              <div class="tip-title">How to edit</div>
+              <ul class="tip-list">
+                <li>Hover any image → Replace or Remove</li>
+                <li>Click any text → Edit inline</li>
+                <li>Images: 1080×1920px recommended</li>
+                <li>Use high-contrast photos for text overlays</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: Phone Preview -->
+          <div class="phone-preview">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen" id="preview-screen">
+                <!-- Mosaic Layout (default) -->
+                <div id="layout-mosaic" class="preview-layout" style="height:100%; display:flex; flex-direction:column;">
+                  <!-- Status bar -->
+                  <div style="height:50px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 20px 8px; color:rgba(255,255,255,.7); font-size:11px;">
+                    <span>۹:۴۱</span>
+                    <span style="display:flex;gap:4px;">⚡ 📶</span>
+                  </div>
+
+                  <!-- Header text overlay -->
+                  <div style="padding:16px 20px 12px; text-align:center;">
+                    <div style="font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,.5); margin-bottom:6px;">۱۴۰۳ · SHOWROOM</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:22px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; line-height:1.4; direction:rtl;">نقره و طلا،<br>ساخته‌ی دست<br>انسان.</div>
+                  </div>
+
+                  <!-- Mosaic Grid -->
+                  <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr 1fr; gap:3px; padding:8px;">
+                    <div class="preview-slot" style="grid-row:1/3; background:linear-gradient(135deg, oklch(25% 0.02 60), oklch(18% 0.02 55)); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:48px;">💍</span>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                    <div class="preview-slot" style="background:linear-gradient(135deg, oklch(22% 0.02 58), oklch(16% 0.02 55)); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:36px;">✨</span>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                    <div class="preview-slot" style="background:linear-gradient(135deg, oklch(28% 0.02 62), oklch(20% 0.02 58)); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:36px;">💎</span>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                    <div class="preview-slot" style="background:linear-gradient(135deg, oklch(24% 0.02 55), oklch(18% 0.02 52)); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:32px;">🌙</span>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                    <div class="preview-slot" style="background:linear-gradient(135deg, oklch(26% 0.02 58), oklch(19% 0.02 54)); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:32px;">🔗</span>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Nav -->
+                  <div class="preview-nav">
+                    <div class="nav-icon"><span>👤</span><span>حساب</span></div>
+                    <div class="nav-icon"><span>❤️</span><span>نشانده</span></div>
+                    <div class="nav-icon"><span>⊞</span><span>گالری</span></div>
+                    <div class="nav-icon"><span>📊</span><span>قیمت روز</span></div>
+                    <div class="nav-icon active"><span>🏠</span><span>ویترین</span></div>
+                  </div>
+                </div>
+
+                <!-- Magazine Layout (hidden) -->
+                <div id="layout-magazine" class="preview-layout" style="height:100%; display:none; flex-direction:column; background:#f8f5f0;">
+                  <!-- Status bar -->
+                  <div style="height:50px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 20px 8px; color:rgba(0,0,0,.5); font-size:11px;">
+                    <span>۹:۴۱</span>
+                    <span style="display:flex;gap:4px;">⚡ 📶</span>
+                  </div>
+
+                  <!-- Magazine header -->
+                  <div style="padding:10px 20px; text-align:center; border-bottom:1px solid rgba(0,0,0,.08);">
+                    <div style="font-size:9px; letter-spacing:0.15em; color:rgba(0,0,0,.4);">ISSUE 02 · ۱۴۰۳</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:32px; font-family:'Cormorant Garamond',Georgia,serif; font-weight:300; letter-spacing:0.08em; color:#1c1b1a; margin:6px 0;">Tala</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:12px; color:#666; direction:rtl;">کارگاه گوهر و طلا</div>
+                    <div style="width:40px; height:1px; background:#1c1b1a; margin:10px auto 0;"></div>
+                  </div>
+
+                  <!-- Hero image -->
+                  <div class="preview-slot" style="flex:1; background:linear-gradient(to bottom, #e8e0d5, #d4c8b8); display:flex; align-items:center; justify-content:center; margin:12px;">
+                    <span style="font-size:72px;">👩</span>
+                    <div class="slot-actions">
+                      <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                      <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Nav -->
+                  <div class="preview-nav" style="background:#f8f5f0; border-top:1px solid rgba(0,0,0,.08);">
+                    <div class="nav-icon" style="color:#888;"><span>👤</span><span>حساب</span></div>
+                    <div class="nav-icon" style="color:#888;"><span>❤️</span><span>نشانده</span></div>
+                    <div class="nav-icon" style="color:#888;"><span>⊞</span><span>گالری</span></div>
+                    <div class="nav-icon" style="color:#888;"><span>📊</span><span>قیمت روز</span></div>
+                    <div class="nav-icon active"><span>🏠</span><span>ویترین</span></div>
+                  </div>
+                </div>
+
+                <!-- Editorial Layout (hidden) -->
+                <div id="layout-editorial" class="preview-layout" style="height:100%; display:none; flex-direction:column; background:#0e0d0c;">
+                  <!-- Status bar -->
+                  <div style="height:50px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 20px 8px; color:rgba(255,255,255,.5); font-size:11px;">
+                    <span>۹:۴۱</span>
+                    <span style="display:flex;gap:4px;">⚡ 📶</span>
+                  </div>
+
+                  <!-- Hero with gradient jewelry -->
+                  <div class="preview-slot" style="height:180px; background:linear-gradient(135deg, #d4a574 0%, #c4956a 50%, #8b6914 100%); display:flex; align-items:center; justify-content:center; position:relative;">
+                    <span style="font-size:56px;">💎</span>
+                    <div class="slot-actions">
+                      <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                      <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                    </div>
+                  </div>
+
+                  <!-- Brand + welcome -->
+                  <div style="padding:20px; text-align:center;">
+                    <div style="font-size:11px; letter-spacing:0.35em; color:rgba(255,255,255,.35); margin-bottom:4px;">FINE JEWELRY</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:28px; font-family:'Cormorant Garamond',Georgia,serif; letter-spacing:0.2em; color:#d4a574;">TALA</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:18px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; margin-top:16px; direction:rtl; line-height:1.5;">به ویترین تالا<br>خوش آمدید</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:11px; color:rgba(255,255,255,.5); margin-top:10px; direction:rtl; line-height:1.6;">گزیده‌ای از زیورآلات دست‌ساز ایرانی<br>که هر یک، روایتی از ذوق و هنر است.</div>
+                  </div>
+
+                  <!-- Collections section -->
+                  <div style="padding:0 20px;">
+                    <div style="font-size:9px; letter-spacing:0.2em; color:#d4a574; margin-bottom:8px;">COLLECTIONS</div>
+                    <div contenteditable="true" class="edit-text" style="font-size:16px; color:#d4a574; font-family:'Cormorant Garamond',Georgia,serif; direction:rtl; margin-bottom:12px;">مجموعه‌های روز</div>
+                    <div class="preview-slot" style="height:80px; background:linear-gradient(135deg, oklch(20% 0.02 55), oklch(15% 0.02 52)); border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative;">
+                      <span style="font-size:28px;">✨</span>
+                      <div style="position:absolute; top:8px; right:8px; background:#d4a574; color:#0e0d0c; font-size:9px; padding:3px 8px; border-radius:4px;">مجموعه برتر</div>
+                      <div class="slot-actions">
+                        <button class="slot-act" onclick="alert('Replace image')">Replace</button>
+                        <button class="slot-act del" onclick="alert('Remove image')">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Spacer -->
+                  <div style="flex:1;"></div>
+
+                  <!-- Bottom Nav -->
+                  <div class="preview-nav">
+                    <div class="nav-icon"><span>👤</span><span>حساب</span></div>
+                    <div class="nav-icon"><span>❤️</span><span>نشانده</span></div>
+                    <div class="nav-icon"><span>⊞</span><span>گالری</span></div>
+                    <div class="nav-icon"><span>📊</span><span>قیمت روز</span></div>
+                    <div class="nav-icon active"><span>🏠</span><span>ویترین</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVOICES -->
+      <div class="section" id="sec-invoices">
+        <div class="page-hdr">
+          <div><div class="page-title">Invoices</div><div class="page-sub">1,048 total · 3 pending</div></div>
+          <div class="pills" id="inv-pills">
+            <span class="pill active">All</span><span class="pill">Paid</span><span class="pill">Pending</span><span class="pill">Draft</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="inv-row"><div class="inv-id">#1048</div><div class="inv-cust"><div class="n">Sahar Moradi</div><div class="p">+98 912 345 6789</div></div><div class="inv-amt">₺8,200</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 17</div></div>
+          <div class="inv-row"><div class="inv-id">#1047</div><div class="inv-cust"><div class="n">Reza Ahmadi</div><div class="p">+98 935 678 1234</div></div><div class="inv-amt">₺15,400</div><span class="badge badge-warn">Pending</span><div class="inv-date">May 16</div></div>
+          <div class="inv-row"><div class="inv-id">#1046</div><div class="inv-cust"><div class="n">Mina Tehrani</div><div class="p">+98 901 234 5678</div></div><div class="inv-amt">₺3,600</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 15</div></div>
+          <div class="inv-row"><div class="inv-id">#1045</div><div class="inv-cust"><div class="n">Ali Karimi</div><div class="p">+98 913 456 7890</div></div><div class="inv-amt">₺22,100</div><span class="badge badge-dim">Draft</span><div class="inv-date">May 14</div></div>
+          <div class="inv-row"><div class="inv-id">#1044</div><div class="inv-cust"><div class="n">Nasrin Hosseini</div><div class="p">+98 921 789 0123</div></div><div class="inv-amt">₺11,800</div><span class="badge badge-ok">Paid</span><div class="inv-date">May 13</div></div>
+        </div>
+      </div>
+
+      <!-- PRICE BOARD -->
+      <div class="section" id="sec-priceboard">
+        <div class="page-hdr">
+          <div><div class="page-title">Price Board</div><div class="page-sub">Live market prices for shop reference</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Gold Prices</div>
+          </div>
+          <div class="price-list">
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">Gold 24K</div>
+                <div class="pe-unit">per gram</div>
+              </div>
+              <div class="pe-price">₺2,845</div>
+              <div class="pe-trend up">↑ 1.8%</div>
+              <div class="pe-updated">Updated 2 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">Gold 22K</div>
+                <div class="pe-unit">per gram</div>
+              </div>
+              <div class="pe-price">₺2,610</div>
+              <div class="pe-trend up">↑ 1.6%</div>
+              <div class="pe-updated">Updated 2 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">Gold 18K</div>
+                <div class="pe-unit">per gram</div>
+              </div>
+              <div class="pe-price">₺2,135</div>
+              <div class="pe-trend down">↓ 0.4%</div>
+              <div class="pe-updated">Updated 5 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Silver & Other Metals</div>
+          </div>
+          <div class="price-list">
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">Silver 925</div>
+                <div class="pe-unit">per gram</div>
+              </div>
+              <div class="pe-price">₺32</div>
+              <div class="pe-trend up">↑ 2.1%</div>
+              <div class="pe-updated">Updated 8 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Exchange Rates</div>
+          </div>
+          <div class="price-list">
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">USD / TRY</div>
+                <div class="pe-unit">1 USD</div>
+              </div>
+              <div class="pe-price">₺28.54</div>
+              <div class="pe-trend down">↓ 0.2%</div>
+              <div class="pe-updated">Updated 1 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+            <div class="price-entry">
+              <div class="pe-main">
+                <div class="pe-name">EUR / TRY</div>
+                <div class="pe-unit">1 EUR</div>
+              </div>
+              <div class="pe-price">₺31.28</div>
+              <div class="pe-trend up">↑ 0.6%</div>
+              <div class="pe-updated">Updated 1 min ago</div>
+              <button class="btn btn-sm btn-ghost" onclick="alert('Edit price entry')">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ MODAL: Add Customer ══ -->
+<div class="modal-overlay" id="modal-cust">
+  <div class="modal">
+    <div class="modal-hdr"><div><div class="modal-title">Add Customer</div><div class="modal-sub">Register a new customer</div></div><button class="modal-x" onclick="closeModal('cust')">×</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fgrp"><label class="flabel">First Name</label><input class="finput" type="text" placeholder="Sahar"></div>
+        <div class="fgrp"><label class="flabel">Last Name</label><input class="finput" type="text" placeholder="Moradi"></div>
+      </div>
+      <div class="fgrp"><label class="flabel">Phone Number</label><input class="finput" type="tel" placeholder="+98 912 345 6789" style="font-family:var(--font-mono)"></div>
+      <div class="fgrp"><label class="flabel">Notes</label><textarea class="finput ftarea" placeholder="Any notes about this customer…"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('cust')">Cancel</button><button class="btn btn-primary">Add Customer</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Add Product ══ -->
+<div class="modal-overlay" id="modal-prod">
+  <div class="modal">
+    <div class="modal-hdr"><div><div class="modal-title">Add Product</div><div class="modal-sub">Add to the store catalog</div></div><button class="modal-x" onclick="closeModal('prod')">×</button></div>
+    <div class="modal-body">
+      <div class="fgrp">
+        <label class="flabel">Product Photo</label>
+        <div class="upload" onclick="this.querySelector('input').click()">
+          <input type="file" accept="image/*" style="display:none">
+          <div class="upload-ico">🖼</div>
+          <div class="upload-txt">Click to upload photo</div>
+          <div class="upload-hint">JPG or PNG · max 10 MB</div>
+        </div>
+      </div>
+      <div class="fgrp"><label class="flabel">Product Name</label><input class="finput" type="text" placeholder="Diamond Solitaire Ring"></div>
+      <div class="frow">
+        <div class="fgrp"><label class="flabel">Category</label><select class="finput fselect"><option>Rings</option><option>Necklaces</option><option>Bracelets</option><option>Earrings</option></select></div>
+        <div class="fgrp"><label class="flabel">Material</label><select class="finput fselect"><option>18K Gold</option><option>24K Gold</option><option>Silver</option><option>White Gold</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="fgrp"><label class="flabel">Price (₺)</label><input class="finput" type="number" placeholder="0" style="font-family:var(--font-mono)"></div>
+        <div class="fgrp"><label class="flabel">Stock Qty</label><input class="finput" type="number" placeholder="0" min="0"></div>
+      </div>
+      <div class="fgrp"><label class="flabel">Description</label><textarea class="finput ftarea" placeholder="Material, dimensions, gemstone details…"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('prod')">Cancel</button><button class="btn btn-primary">Add Product</button></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: New Gallery Post (3-step) ══ -->
+<div class="modal-overlay" id="modal-post">
+  <div class="modal" style="width:580px;max-width:95vw">
+    <div class="modal-hdr">
+      <div><div class="modal-title">New Gallery Post</div><div class="modal-sub" id="post-sub">Select a photo to get started</div></div>
+      <button class="modal-x" onclick="closeModal('post');resetPost()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="steps">
+        <div class="step active" id="ps1"><div class="step-num">1</div><div class="step-lbl">Upload Photo</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="ps2"><div class="step-num">2</div><div class="step-lbl">Add Details</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="ps3"><div class="step-num">3</div><div class="step-lbl">Publish</div></div>
+      </div>
+
+      <div class="spanel active" id="pp1">
+        <div class="upload" id="post-up" onclick="document.getElementById('post-file').click()">
+          <input type="file" id="post-file" accept="image/*" style="display:none" onchange="previewPost(this)">
+          <div class="upload-ico">📸</div>
+          <div class="upload-txt">Select product photo</div>
+          <div class="upload-hint">Square images work best · JPG or PNG</div>
+        </div>
+        <div id="post-prev" style="display:none;margin-top:14px">
+          <img id="post-prev-img" style="width:100%;border-radius:var(--r);max-height:300px;object-fit:cover">
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="document.getElementById('post-file').click()">Change photo</button>
+        </div>
+      </div>
+
+      <div class="spanel" id="pp2">
+        <div class="fgrp"><label class="flabel">Caption</label><textarea class="finput ftarea" placeholder="Describe the piece — material, craftsmanship, collection…"></textarea></div>
+        <div class="frow">
+          <div class="fgrp"><label class="flabel">Price (optional)</label><input class="finput" type="number" placeholder="12500" style="font-family:var(--font-mono)"></div>
+          <div class="fgrp"><label class="flabel">Tag</label><select class="finput fselect"><option>New Arrival</option><option>Featured</option><option>Sale</option><option>Collection</option></select></div>
+        </div>
+        <div class="fgrp">
+          <label class="flabel">Category</label>
+          <div class="pills" style="margin-top:2px" id="post-cats">
+            <span class="pill active" onclick="togglePill(this,'post-cats')">Rings</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">Necklaces</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">Bracelets</span>
+            <span class="pill" onclick="togglePill(this,'post-cats')">Earrings</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="spanel" id="pp3" style="text-align:center;padding:12px 0">
+        <div style="font-size:50px;margin-bottom:14px">✓</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:500;margin-bottom:6px">Ready to Publish</div>
+        <div style="font-size:13px;color:var(--muted);max-width:300px;margin:0 auto 20px">Your post will appear in the Tala gallery for customers to browse and save.</div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button class="btn btn-ghost" onclick="postGo(2)">← Edit Details</button>
+          <button class="btn btn-gold" onclick="closeModal('post');resetPost()">Publish Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-foot" id="post-foot" style="justify-content:space-between">
+      <button class="btn btn-ghost" id="post-back" style="visibility:hidden" onclick="postGo(postStep-1)">← Back</button>
+      <button class="btn btn-primary" id="post-next" onclick="postGo(postStep+1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: New Invoice (3-step) ══ -->
+<div class="modal-overlay" id="modal-inv">
+  <div class="modal" style="width:580px;max-width:95vw">
+    <div class="modal-hdr">
+      <div><div class="modal-title">New Invoice</div><div class="modal-sub" id="inv-sub">Enter the customer's phone number</div></div>
+      <button class="modal-x" onclick="closeModal('inv');resetInv()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="steps">
+        <div class="step active" id="is1"><div class="step-num">1</div><div class="step-lbl">Customer</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="is2"><div class="step-num">2</div><div class="step-lbl">ID Photo</div></div>
+        <div class="step-line"></div>
+        <div class="step" id="is3"><div class="step-num">3</div><div class="step-lbl">Receipt</div></div>
+      </div>
+
+      <!-- Step 1: Phone + Items -->
+      <div class="spanel active" id="ip1">
+        <div class="fgrp">
+          <label class="flabel">Customer Phone Number</label>
+          <input class="finput" type="tel" id="inv-phone" placeholder="+98 912 345 6789" style="font-size:17px;padding:13px;font-family:var(--font-mono)">
+        </div>
+        <div id="inv-found" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="av">S</div>
+            <div><div style="font-weight:600;font-size:13px">Sahar Moradi</div><div style="font-size:12px;color:var(--muted)">7 purchases · ₺84,200 lifetime</div></div>
+            <span class="badge badge-ok" style="margin-left:auto">Found</span>
+          </div>
+        </div>
+        <div class="fgrp">
+          <label class="flabel">Item / Product</label>
+          <select class="finput fselect"><option value="">Select product…</option><option>Diamond Solitaire Ring — ₺24,500</option><option>Pearl Drop Necklace — ₺8,900</option><option>Gold Chain Bracelet — ₺18,200</option><option>Ruby Stud Earrings — ₺12,700</option></select>
+        </div>
+        <div class="frow">
+          <div class="fgrp"><label class="flabel">Amount (₺)</label><input class="finput" type="number" placeholder="0" style="font-family:var(--font-mono)"></div>
+          <div class="fgrp"><label class="flabel">Note (optional)</label><input class="finput" type="text" placeholder="e.g. deposit, gift"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: ID Photo -->
+      <div class="spanel" id="ip2">
+        <div style="text-align:center;margin-bottom:18px">
+          <div style="font-size:46px;margin-bottom:8px">🪪</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">Customer ID Photo</div>
+          <div style="font-size:12px;color:var(--muted)">Take or upload a photo of the customer's national ID card</div>
+        </div>
+        <div class="upload" onclick="document.getElementById('inv-id-file').click()">
+          <input type="file" id="inv-id-file" accept="image/*" capture="environment" style="display:none">
+          <div class="upload-ico">📷</div>
+          <div class="upload-txt">Tap to take or upload photo</div>
+          <div class="upload-hint">Stored securely for verification only</div>
+        </div>
+      </div>
+
+      <!-- Step 3: Receipt -->
+      <div class="spanel" id="ip3">
+        <div style="text-align:center;margin-bottom:18px">
+          <div style="font-size:46px;margin-bottom:8px">🧾</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">Receipt Photo</div>
+          <div style="font-size:12px;color:var(--muted)">Upload the signed receipt or payment confirmation</div>
+        </div>
+        <div class="upload" onclick="document.getElementById('inv-rcpt-file').click()" style="margin-bottom:16px">
+          <input type="file" id="inv-rcpt-file" accept="image/*" capture="environment" style="display:none">
+          <div class="upload-ico">📋</div>
+          <div class="upload-txt">Tap to take or upload receipt</div>
+          <div class="upload-hint">JPG or PNG · max 20 MB</div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px">
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Invoice Summary</div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>Customer</span><span style="font-weight:600">Sahar Moradi</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>Item</span><span style="font-weight:600">Diamond Solitaire Ring</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:15px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+            <span style="font-weight:600">Total</span>
+            <span style="font-weight:700;font-family:var(--font-mono);color:var(--accent)">₺24,500</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-foot" style="justify-content:space-between">
+      <button class="btn btn-ghost" id="inv-back" style="visibility:hidden" onclick="invGo(invStep-1)">← Back</button>
+      <button class="btn btn-primary" id="inv-next" onclick="invGo(invStep+1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CUSTOMER DRAWER ══ -->
+<div class="cd-backdrop" id="cd-backdrop" onclick="closeCustDrawer()"></div>
+<div class="cust-drawer" id="cust-drawer">
+  <div class="cd-hdr">
+    <div class="cd-av" id="cd-av">S</div>
+    <div class="cd-info">
+      <div class="cd-name" id="cd-name">Sahar Moradi</div>
+      <div class="cd-phone" id="cd-phone">+98 912 345 6789</div>
+      <div class="cd-joined">Customer since <span id="cd-joined">Jan 2024</span></div>
+    </div>
+    <div class="cd-actions">
+      <button class="cd-act-btn edit" title="Edit Customer" onclick="closeCustDrawer();setTimeout(()=>openEditCust(window._cdCurrent.firstName,window._cdCurrent.lastName,window._cdCurrent.phone,window._cdCurrent.notes),50)">✎</button>
+      <button class="cd-act-btn block" title="Block Customer" onclick="blockCustomer()">⊘</button>
+      <button class="cd-act-btn delete" title="Delete Customer" onclick="deleteCustomer()">🗑</button>
+    </div>
+    <button class="cd-close" onclick="closeCustDrawer()">×</button>
+  </div>
+  <div class="cd-body">
+    <div class="cd-section">
+      <div class="cd-sec-title">Overview</div>
+      <div class="cd-metrics">
+        <div class="cd-metric"><div class="cd-m-label">Total Spent</div><div class="cd-m-val" id="cd-total">₺84,200</div><div class="cd-m-sub" id="cd-total-sub">across 7 orders</div></div>
+        <div class="cd-metric"><div class="cd-m-label">Avg Order</div><div class="cd-m-val" id="cd-avg">₺12,028</div><div class="cd-m-sub">per purchase</div></div>
+        <div class="cd-metric"><div class="cd-m-label">Last Visit</div><div class="cd-m-val" style="font-size:12px;font-family:var(--font-body);font-weight:600" id="cd-last-visit">May 17, 2026</div><div class="cd-m-sub" id="cd-visit-ago">2 hours ago</div></div>
+        <div class="cd-metric"><div class="cd-m-label">Avg Session</div><div class="cd-m-val" id="cd-session">8m 24s</div><div class="cd-m-sub">per visit</div></div>
+      </div>
+    </div>
+    <div class="cd-section">
+      <div class="cd-sec-title">Liked Products</div>
+      <div class="liked-scroll" id="cd-liked"></div>
+    </div>
+    <div class="cd-section">
+      <div class="cd-sec-title">Activity This Month</div>
+      <div class="cd-metrics cd-metrics-3" style="grid-template-columns:repeat(3,1fr)">
+        <div class="cd-metric"><div class="cd-m-label">Visits</div><div class="cd-m-val" id="cd-visits">14</div><div class="cd-m-sub">this month</div></div>
+        <div class="cd-metric"><div class="cd-m-label">Total Time</div><div class="cd-m-val" id="cd-total-time">1h 58m</div><div class="cd-m-sub">on app</div></div>
+        <div class="cd-metric"><div class="cd-m-label">Saves</div><div class="cd-m-val" id="cd-saves">23</div><div class="cd-m-sub">items favorited</div></div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-size:9.5px;color:var(--muted);margin-bottom:6px;letter-spacing:0.12em;text-transform:uppercase">Daily activity — past 7 days</div>
+        <div class="act-bar" id="cd-activity-bar"></div>
+        <div class="act-bar-days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      </div>
+    </div>
+    <div class="cd-section">
+      <div class="cd-sec-title">Recent Activity</div>
+      <div id="cd-activity-list"></div>
+    </div>
+  </div>
+  <div class="cd-foot">
+    <button class="btn btn-primary btn-sm" style="flex:1" onclick="closeCustDrawer();setTimeout(()=>{navigate('invoices');openModal('inv');},80)">+ New Invoice</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: Edit Customer ══ -->
+<div class="modal-overlay" id="modal-edit-cust">
+  <div class="modal">
+    <div class="modal-hdr"><div><div class="modal-title">Edit Customer</div><div class="modal-sub">Update customer details</div></div><button class="modal-x" onclick="closeModal('edit-cust')">×</button></div>
+    <div class="modal-body">
+      <div class="frow"><div class="fgrp"><label class="flabel">First Name</label><input class="finput" id="ec-first" type="text"></div><div class="fgrp"><label class="flabel">Last Name</label><input class="finput" id="ec-last" type="text"></div></div>
+      <div class="fgrp"><label class="flabel">Phone Number</label><input class="finput" id="ec-phone" type="tel" style="font-family:var(--font-mono)"></div>
+      <div class="fgrp"><label class="flabel">Notes</label><textarea class="finput ftarea" id="ec-notes" placeholder="Any notes about this customer…"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('edit-cust')">Cancel</button><button class="btn btn-primary" onclick="closeModal('edit-cust')">Save Changes</button></div>
+  </div>
+</div>
+
+<script>
+  /* ── Navigation ── */
+  const sectionMeta = {
+    dashboard: { title:'Dashboard',  btn:'+ Add' },
+    customers:  { title:'Customers', btn:'+ Add Customer' },
+    products:   { title:'Products',  btn:'+ Add Product' },
+    gallery:    { title:'Showroom Editor',   btn:null },
+    invoices:   { title:'Invoices',  btn:'+ New Invoice' },
+    priceboard: { title:'Price Board', btn:'+ Add Price Entry' },
+  };
+  const primaryFns = {
+    customers: () => openModal('cust'),
+    products:  () => openModal('prod'),
+    invoices:  () => openModal('inv'),
+    priceboard: () => alert('Add new price entry'),
+  };
+  let current = 'dashboard';
+
+  function navigate(sec) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + sec).classList.add('active');
+    document.querySelector('[data-sec="' + sec + '"]').classList.add('active');
+    document.getElementById('tb-title').textContent = sectionMeta[sec].title;
+    const btn = document.getElementById('primary-btn');
+    if (sectionMeta[sec].btn) {
+      btn.textContent = sectionMeta[sec].btn;
+      btn.style.display = '';
+    } else {
+      btn.style.display = 'none';
+    }
+    current = sec;
+  }
+  document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => navigate(el.dataset.sec)));
+  function handlePrimary() { if (primaryFns[current]) primaryFns[current](); }
+
+  /* ── Pills ── */
+  ['prod-pills','gal-pills','inv-pills'].forEach(id => {
+    const g = document.getElementById(id);
+    if (!g) return;
+    g.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => {
+      g.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    }));
+  });
+  function togglePill(el, groupId) {
+    const g = document.getElementById(groupId);
+    if (!g) return;
+    g.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ── Modals ── */
+  function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
+  function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+  /* ── Gallery Style Switcher ── */
+  function switchStyle(style) {
+    // Update style picker buttons
+    document.querySelectorAll('.style-opt').forEach(s => s.classList.remove('active'));
+    document.querySelector('[data-style="' + style + '"]').classList.add('active');
+    // Show/hide layouts
+    document.querySelectorAll('.preview-layout').forEach(l => l.style.display = 'none');
+    const layout = document.getElementById('layout-' + style);
+    if (layout) layout.style.display = 'flex';
+  }
+
+  /* ── Theme Color Picker ── */
+  function updateThemeColor(type, value) {
+    // Sync swatch and hex input
+    document.getElementById('color-' + type).value = value;
+    document.getElementById('hex-' + type).value = value;
+    // Apply to preview elements with accent colors
+    if (type === 'primary') {
+      document.documentElement.style.setProperty('--preview-primary', value);
+      document.querySelectorAll('.preview-layout [style*="d4a574"]').forEach(el => {
+        el.style.color = value;
+      });
+    }
+  }
+
+  /* ── Gallery post steps ── */
+  let postStep = 1;
+  const postSubs = ['Select a photo to get started', 'Add details for this post', 'Review and publish'];
+  function postGo(n) {
+    if (n < 1 || n > 3) return;
+    postStep = n;
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('ps' + i).className = 'step' + (i === n ? ' active' : i < n ? ' done' : '');
+      document.getElementById('pp' + i).className = 'spanel' + (i === n ? ' active' : '');
+    }
+    document.getElementById('post-sub').textContent = postSubs[n - 1];
+    document.getElementById('post-back').style.visibility = n > 1 ? 'visible' : 'hidden';
+    document.getElementById('post-next').textContent = n === 3 ? 'Publish ✓' : 'Next →';
+    document.getElementById('post-foot').style.display = n === 3 ? 'none' : 'flex';
+  }
+  function resetPost() { postStep = 1; postGo(1); document.getElementById('post-prev').style.display = 'none'; document.getElementById('post-up').style.display = 'block'; }
+  function previewPost(inp) {
+    if (!inp.files || !inp.files[0]) return;
+    const r = new FileReader();
+    r.onload = e => {
+      document.getElementById('post-prev-img').src = e.target.result;
+      document.getElementById('post-up').style.display = 'none';
+      document.getElementById('post-prev').style.display = 'block';
+    };
+    r.readAsDataURL(inp.files[0]);
+  }
+
+  /* ── Invoice steps ── */
+  let invStep = 1;
+  const invSubs = ["Enter the customer's phone number", 'Upload customer ID photo', 'Upload signed receipt'];
+  function invGo(n) {
+    if (n < 1) return;
+    if (n > 3) { closeModal('inv'); resetInv(); return; }
+    invStep = n;
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('is' + i).className = 'step' + (i === n ? ' active' : i < n ? ' done' : '');
+      document.getElementById('ip' + i).className = 'spanel' + (i === n ? ' active' : '');
+    }
+    document.getElementById('inv-sub').textContent = invSubs[n - 1];
+    document.getElementById('inv-back').style.visibility = n > 1 ? 'visible' : 'hidden';
+    document.getElementById('inv-next').textContent = n === 3 ? 'Create Invoice ✓' : 'Next →';
+  }
+  function resetInv() { invStep = 1; invGo(1); }
+
+  /* Phone lookup simulation */
+  document.getElementById('inv-phone').addEventListener('input', function() {
+    document.getElementById('inv-found').style.display = this.value.length > 7 ? 'block' : 'none';
+  });
+
+  /* ── Customer Drawer ── */
+  const custProfiles = {
+    'Sahar Moradi': {
+      firstName:'Sahar', lastName:'Moradi', phone:'+98 912 345 6789', notes:'VIP client, prefers gold pieces',
+      joined:'Jan 2024', total:'₺84,200', totalSub:'across 7 orders', avg:'₺12,028',
+      lastVisit:'May 17, 2026', visitAgo:'2 hours ago', session:'8m 24s',
+      visits:'14', totalTime:'1h 58m', saves:'23',
+      activityDays:[{h:8},{h:12},{h:6},{h:18},{h:9},{h:24},{h:14}],
+      liked:[{e:'💍',n:'Diamond Ring'},{e:'📿',n:'Pearl Necklace'},{e:'✨',n:'Ruby Earrings'},{e:'🔗',n:'Gold Chain'}],
+      activity:[
+        {text:'Viewed Gallery',sub:'Pearl Drop Necklace',time:'2h ago',color:'var(--accent)'},
+        {text:'Saved to Favorites',sub:'Diamond Solitaire Ring',time:'3h ago',color:'var(--warning)'},
+        {text:'Purchased',sub:'Gold Chain Bracelet · ₺18,200',time:'May 15',color:'var(--success)'},
+        {text:'Opened Showroom',sub:'Featured collection · 12 min',time:'May 14',color:'var(--accent)'},
+      ]
+    },
+    'Reza Ahmadi': {
+      firstName:'Reza', lastName:'Ahmadi', phone:'+98 935 678 1234', notes:'Interested in men\'s rings',
+      joined:'Mar 2024', total:'₺42,500', totalSub:'across 3 orders', avg:'₺14,166',
+      lastVisit:'May 16, 2026', visitAgo:'1 day ago', session:'5m 12s',
+      visits:'8', totalTime:'41m', saves:'9',
+      activityDays:[{h:4},{h:0},{h:7},{h:3},{h:11},{h:5},{h:2}],
+      liked:[{e:'🔗',n:'Gold Chain'},{e:'💍',n:'Signet Ring'},{e:'⌚',n:'Watch Band'}],
+      activity:[
+        {text:'Viewed Gallery',sub:'Gold Chain Bracelet',time:'1d ago',color:'var(--accent)'},
+        {text:'Purchased',sub:'Signet Ring · ₺15,400',time:'May 12',color:'var(--success)'},
+      ]
+    },
+    'Mina Tehrani': {
+      firstName:'Mina', lastName:'Tehrani', phone:'+98 901 234 5678', notes:'Anniversary shopping, husband\'s gift',
+      joined:'Oct 2023', total:'₺198,400', totalSub:'across 12 orders', avg:'₺16,533',
+      lastVisit:'May 15, 2026', visitAgo:'2 days ago', session:'14m 8s',
+      visits:'22', totalTime:'5h 12m', saves:'47',
+      activityDays:[{h:18},{h:22},{h:14},{h:28},{h:16},{h:32},{h:20}],
+      liked:[{e:'💎',n:'Diamond Set'},{e:'📿',n:'Pearl Drop'},{e:'✨',n:'Ruby Studs'},{e:'💍',n:'Wedding Band'},{e:'🔗',n:'Bracelet'}],
+      activity:[
+        {text:'Saved to Favorites',sub:'Diamond Solitaire Ring',time:'2d ago',color:'var(--warning)'},
+        {text:'Purchased',sub:'Pearl Drop Necklace · ₺8,900',time:'May 10',color:'var(--success)'},
+        {text:'Viewed Gallery',sub:'Wedding collection · 18 min',time:'May 8',color:'var(--accent)'},
+      ]
+    },
+    'Ali Karimi': {
+      firstName:'Ali', lastName:'Karimi', phone:'+98 913 456 7890', notes:'First-time buyer',
+      joined:'May 2026', total:'₺28,700', totalSub:'across 2 orders', avg:'₺14,350',
+      lastVisit:'May 14, 2026', visitAgo:'3 days ago', session:'3m 45s',
+      visits:'4', totalTime:'15m', saves:'5',
+      activityDays:[{h:2},{h:0},{h:4},{h:6},{h:0},{h:3},{h:1}],
+      liked:[{e:'💍',n:'Diamond Ring'},{e:'📿',n:'Necklace'}],
+      activity:[
+        {text:'Purchased',sub:'Ruby Stud Earrings · ₺12,700',time:'May 14',color:'var(--success)'},
+        {text:'Viewed Gallery',sub:'Earrings category',time:'May 13',color:'var(--accent)'},
+      ]
+    },
+    'Nasrin Hosseini': {
+      firstName:'Nasrin', lastName:'Hosseini', phone:'+98 921 789 0123', notes:'',
+      joined:'Nov 2024', total:'₺67,300', totalSub:'across 5 orders', avg:'₺13,460',
+      lastVisit:'May 12, 2026', visitAgo:'5 days ago', session:'6m 52s',
+      visits:'11', totalTime:'1h 15m', saves:'18',
+      activityDays:[{h:6},{h:9},{h:4},{h:12},{h:7},{h:15},{h:8}],
+      liked:[{e:'💎',n:'Diamond Set'},{e:'✨',n:'Ruby Studs'},{e:'📿',n:'Pearl Drop'}],
+      activity:[
+        {text:'Saved to Favorites',sub:'Ruby Necklace Collection',time:'5d ago',color:'var(--warning)'},
+        {text:'Purchased',sub:'Gold Chain Bracelet · ₺18,200',time:'May 6',color:'var(--success)'},
+        {text:'Viewed Gallery',sub:'New arrivals · 9 min',time:'May 5',color:'var(--accent)'},
+      ]
+    }
+  };
+
+  function openCustDrawer(name) {
+    const d = custProfiles[name];
+    if (!d) return;
+    window._cdCurrent = d;
+    document.getElementById('cd-av').textContent = d.firstName[0];
+    document.getElementById('cd-name').textContent = d.firstName + ' ' + d.lastName;
+    document.getElementById('cd-phone').textContent = d.phone;
+    document.getElementById('cd-joined').textContent = d.joined;
+    document.getElementById('cd-total').textContent = d.total;
+    document.getElementById('cd-total-sub').textContent = d.totalSub;
+    document.getElementById('cd-avg').textContent = d.avg;
+    document.getElementById('cd-last-visit').textContent = d.lastVisit;
+    document.getElementById('cd-visit-ago').textContent = d.visitAgo;
+    document.getElementById('cd-session').textContent = d.session;
+    document.getElementById('cd-visits').textContent = d.visits;
+    document.getElementById('cd-total-time').textContent = d.totalTime;
+    document.getElementById('cd-saves').textContent = d.saves;
+
+    const maxH = Math.max(...d.activityDays.map(x => x.h), 1);
+    document.getElementById('cd-activity-bar').innerHTML = d.activityDays
+      .map(x => `<div class="act-bar-col${x.h >= maxH * 0.75 ? ' hi' : ''}" style="height:${Math.max(4, Math.round(x.h / maxH * 36))}px"></div>`)
+      .join('');
+
+    document.getElementById('cd-liked').innerHTML = d.liked
+      .map(p => `<div class="liked-item"><div class="liked-thumb">${p.e}</div><div class="liked-name">${p.n}</div></div>`)
+      .join('');
+
+    document.getElementById('cd-activity-list').innerHTML = d.activity
+      .map(a => `<div class="actl-item"><div class="actl-dot" style="background:${a.color}"></div><div class="actl-body"><div class="actl-main">${a.text}</div><div class="actl-sub">${a.sub}</div></div><div class="actl-time">${a.time}</div></div>`)
+      .join('');
+
+    document.getElementById('cust-drawer').classList.add('open');
+    document.getElementById('cd-backdrop').classList.add('open');
+  }
+
+  function closeCustDrawer() {
+    document.getElementById('cust-drawer').classList.remove('open');
+    document.getElementById('cd-backdrop').classList.remove('open');
+  }
+
+  function openEditCust(first, last, phone, notes) {
+    document.getElementById('ec-first').value = first || '';
+    document.getElementById('ec-last').value = last || '';
+    document.getElementById('ec-phone').value = phone || '';
+    document.getElementById('ec-notes').value = notes || '';
+    openModal('edit-cust');
+  }
+
+  function blockCustomer() {
+    if (confirm('Block ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '? They will no longer be able to log in.')) {
+      closeCustDrawer();
+      alert('Customer blocked.');
+    }
+  }
+
+  function deleteCustomer() {
+    if (confirm('Delete ' + window._cdCurrent.firstName + ' ' + window._cdCurrent.lastName + '? This action cannot be undone.')) {
+      closeCustDrawer();
+      alert('Customer deleted.');
+    }
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCustDrawer(); });
+
+  /* ── Layout Picker ── */
+  document.querySelectorAll('.layout-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.layout-opt').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      const layoutName = opt.querySelector('.layout-name').textContent;
+      document.querySelector('.card-title').textContent = layoutName + ' Layout — Upload Images';
+    });
+  });
+</script>
+</body>
+</html>
